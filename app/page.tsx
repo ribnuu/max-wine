@@ -101,7 +101,7 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
   return (
     <nav className="bg-red-800 text-white sticky top-0 z-50 shadow-lg ">
       {/* Top Bar */}
-      <div className="bg-red-800 py-2 px-4 border-b-2 border-white sticky top-0 z-50 shadow-lg">
+      <div className="bg-red-800 py-2 px-4 border-b-2 border-white">
         <div className="max-w-7xl mx-auto flex justify-between items-center text-sm">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
@@ -118,109 +118,117 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
         </div>
       </div>
 
-      {/* Main Navigation */}
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div
-            className="text-2xl font-bold cursor-pointer flex items-center gap-2"
-            onClick={() => setCurrentPage("home")}
-          >
-            <div className="text-white px-5 py-1 rounded text-2xl font-extrabold flex justify-center items-center">
-              Mak Wines
-            </div>
+      {/* Logo + Main Navigation (centered) */}
+      <div className="max-w-7xl mx-auto px-4 flex flex-col items-center">
+        {/* Logo */}
+        <div
+          className="py-4 w-full flex justify-center"
+          onClick={() => setCurrentPage("home")}
+          role="button"
+        >
+          <div className="text-white px-4 py-1 rounded text-8xl sm:text-7xl md:text-8xl text-center">
+            Mak{" "}
+            <span className="text-white px-4 rounded text-8xl sm:text-7xl md:text-8xl text-center font-bold">
+              Wines
+            </span>
           </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-6">
-            {navItems.map((item) => (
-              <div key={item.name} className="relative group">
-                <button
-                  onClick={() => !item.dropdown && setCurrentPage(item.page)}
-                  className="flex items-center gap-1 hover:text-red-200 transition py-2"
-                >
-                  {item.name}
-                  {item.dropdown && <ChevronDown className="w-4 h-4" />}
-                </button>
-                {item.dropdown && (
-                  <div className="absolute top-full left-0 bg-white text-gray-800 shadow-lg rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-48">
-                    {item.dropdown.map((subItem) => (
-                      <button
-                        key={subItem.name}
-                        onClick={() => setCurrentPage("products")}
-                        className="block w-full text-left px-4 py-2 hover:bg-red-50 transition"
-                      >
-                        {subItem.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-            <button
-              onClick={() => setCurrentPage("store-finder")}
-              className="flex items-center gap-1 bg-red-600 hover:bg-red-500 px-4 py-2 rounded transition"
-            >
-              <MapPin className="w-4 h-4" />
-              Store Finder
-            </button>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <button
-            className="lg:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
         </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden pb-4">
-            {navItems.map((item) => (
-              <div key={item.name}>
-                <button
-                  onClick={() => {
-                    if (!item.dropdown) {
-                      setCurrentPage(item.page);
-                      setMobileMenuOpen(false);
-                    } else {
-                      setActiveDropdown(
-                        activeDropdown === item.name ? null : item.name
-                      );
-                    }
-                  }}
-                  className="block w-full text-left py-2 hover:text-red-200 transition"
-                >
-                  {item.name}
-                </button>
-                {item.dropdown && activeDropdown === item.name && (
-                  <div className="pl-4 bg-red-600 rounded my-1">
-                    {item.dropdown.map((subItem) => (
-                      <button
-                        key={subItem.name}
-                        onClick={() => {
-                          setCurrentPage("products");
-                          setMobileMenuOpen(false);
-                        }}
-                        className="block w-full text-left py-2 text-sm hover:text-red-200"
-                      >
-                        {subItem.name}
-                      </button>
-                    ))}
-                  </div>
+        {/* Main Navigation */}
+        <div className="w-full">
+          <div className="flex justify-center items-center h-16">
+            {/* Desktop Navigation centered */}
+            <div className="hidden lg:flex items-center gap-6">
+              {navItems.map((item) => (
+                <div key={item.name} className="relative group">
+                  <button
+                    onClick={() => !item.dropdown && setCurrentPage(item.page)}
+                    className="flex items-center gap-1 hover:text-red-200 transition py-2"
+                  >
+                    {item.name}
+                    {item.dropdown && <ChevronDown className="w-4 h-4" />}
+                  </button>
+                  {item.dropdown && (
+                    <div className="absolute top-full left-0 bg-white text-gray-800 shadow-lg rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-48">
+                      {item.dropdown.map((subItem) => (
+                        <button
+                          key={subItem.name}
+                          onClick={() => setCurrentPage("products")}
+                          className="block w-full text-left px-4 py-2 hover:bg-red-50 transition"
+                        >
+                          {subItem.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+              <button
+                onClick={() => setCurrentPage("store-finder")}
+                className="flex items-center gap-1 bg-red-600 hover:bg-red-500 px-4 py-2 rounded transition"
+              >
+                <MapPin className="w-4 h-4" />
+                Store Finder
+              </button>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <div className="lg:hidden absolute right-4">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
                 )}
-              </div>
-            ))}
+              </button>
+            </div>
           </div>
-        )}
+        </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden pb-4">
+          {navItems.map((item) => (
+            <div key={item.name}>
+              <button
+                onClick={() => {
+                  if (!item.dropdown) {
+                    setCurrentPage(item.page);
+                    setMobileMenuOpen(false);
+                  } else {
+                    setActiveDropdown(
+                      activeDropdown === item.name ? null : item.name
+                    );
+                  }
+                }}
+                className="block w-full text-left py-2 hover:text-red-200 transition"
+              >
+                {item.name}
+              </button>
+              {item.dropdown && activeDropdown === item.name && (
+                <div className="pl-4 bg-red-600 rounded my-1">
+                  {item.dropdown.map((subItem) => (
+                    <button
+                      key={subItem.name}
+                      onClick={() => {
+                        setCurrentPage("products");
+                        setMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left py-2 text-sm hover:text-red-200"
+                    >
+                      {subItem.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </nav>
   );
 };
