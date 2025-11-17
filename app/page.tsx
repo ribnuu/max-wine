@@ -101,7 +101,7 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
   return (
     <nav className="bg-red-800 text-white sticky top-0 z-50 shadow-lg ">
       {/* Top Bar */}
-      <div className="bg-red-800 py-2 px-4 border-b-2 border-white">
+      <div className="bg-red-800 py-2 px-4 border-b border-white">
         <div className="max-w-7xl mx-auto flex justify-between items-center text-sm">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
@@ -126,9 +126,9 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
           onClick={() => setCurrentPage("home")}
           role="button"
         >
-          <div className="text-white px-4 py-1 rounded text-8xl sm:text-7xl md:text-8xl text-center">
+          <div className="text-white px-4 py-1 rounded text-7xl sm:text-6xl md:text-7xl text-center">
             Mak{" "}
-            <span className="text-white px-4 rounded text-8xl sm:text-7xl md:text-8xl text-center font-bold">
+            <span className="text-white px-4 rounded text-7xl sm:text-6xl md:text-7xl text-center font-bold">
               Wines
             </span>
           </div>
