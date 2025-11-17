@@ -98,6 +98,11 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
     },
   ];
 
+  const handleNavClick = (page: string) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <nav className="bg-red-800 text-white sticky top-0 z-50 shadow-lg ">
       {/* Top Bar */}
@@ -118,73 +123,64 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
         </div>
       </div>
 
-      {/* Logo + Main Navigation (centered) */}
-      <div className="max-w-7xl mx-auto px-4 flex flex-col items-center">
-        {/* Logo */}
-        <div
-          className="py-4 w-full flex justify-center"
-          onClick={() => setCurrentPage("home")}
-          role="button"
-        >
-          <div className="text-white px-4 py-1 rounded text-7xl sm:text-6xl md:text-7xl text-center">
-            Mak{" "}
-            <span className="text-white px-4 rounded text-7xl sm:text-6xl md:text-7xl text-center font-bold">
-              Wines
-            </span>
+      {/* Main Navigation */}
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex justify-between items-center h-20 gap-8">
+          {/* Logo */}
+          <div
+            className="text-5xl sm:text-5xl text-white cursor-pointer whitespace-nowrap"
+            onClick={() => handleNavClick("home")}
+          >
+            Mak <span className="font-bold">Wines</span>
           </div>
-        </div>
 
-        {/* Main Navigation */}
-        <div className="w-full">
-          <div className="flex justify-center items-center h-16">
-            {/* Desktop Navigation centered */}
-            <div className="hidden lg:flex items-center gap-6">
-              {navItems.map((item) => (
-                <div key={item.name} className="relative group">
-                  <button
-                    onClick={() => !item.dropdown && setCurrentPage(item.page)}
-                    className="flex items-center gap-1 hover:text-red-200 transition py-2"
-                  >
-                    {item.name}
-                    {item.dropdown && <ChevronDown className="w-4 h-4" />}
-                  </button>
-                  {item.dropdown && (
-                    <div className="absolute top-full left-0 bg-white text-gray-800 shadow-lg rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-48">
-                      {item.dropdown.map((subItem) => (
-                        <button
-                          key={subItem.name}
-                          onClick={() => setCurrentPage("products")}
-                          className="block w-full text-left px-4 py-2 hover:bg-red-50 transition"
-                        >
-                          {subItem.name}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-              <button
-                onClick={() => setCurrentPage("store-finder")}
-                className="flex items-center gap-1 bg-red-600 hover:bg-red-500 px-4 py-2 rounded transition"
-              >
-                <MapPin className="w-4 h-4" />
-                Store Finder
-              </button>
-            </div>
-
-            {/* Mobile Menu Toggle */}
-            <div className="lg:hidden absolute right-4">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                aria-label="Toggle menu"
-              >
-                {mobileMenuOpen ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
+          {/* Desktop Navigation centered */}
+          <div className="hidden lg:flex items-center gap-6">
+            {navItems.map((item) => (
+              <div key={item.name} className="relative group">
+                <button
+                  onClick={() => !item.dropdown && handleNavClick(item.page)}
+                  className="flex items-center gap-1 hover:text-red-200 transition py-2"
+                >
+                  {item.name}
+                  {item.dropdown && <ChevronDown className="w-4 h-4" />}
+                </button>
+                {item.dropdown && (
+                  <div className="absolute top-full left-0 bg-white text-gray-800 shadow-lg rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-48">
+                    {item.dropdown.map((subItem) => (
+                      <button
+                        key={subItem.name}
+                        onClick={() => handleNavClick("products")}
+                        className="block w-full text-left px-4 py-2 hover:bg-red-50 transition"
+                      >
+                        {subItem.name}
+                      </button>
+                    ))}
+                  </div>
                 )}
-              </button>
-            </div>
+              </div>
+            ))}
+            <button
+              onClick={() => handleNavClick("store-finder")}
+              className="flex items-center gap-1 bg-red-600 hover:bg-red-500 px-4 py-2 rounded transition"
+            >
+              <MapPin className="w-4 h-4" />
+              Store Finder
+            </button>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="lg:hidden absolute right-4">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -197,7 +193,7 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
               <button
                 onClick={() => {
                   if (!item.dropdown) {
-                    setCurrentPage(item.page);
+                    handleNavClick(item.page);
                     setMobileMenuOpen(false);
                   } else {
                     setActiveDropdown(
@@ -215,7 +211,7 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
                     <button
                       key={subItem.name}
                       onClick={() => {
-                        setCurrentPage("products");
+                        handleNavClick("products");
                         setMobileMenuOpen(false);
                       }}
                       className="block w-full text-left py-2 text-sm hover:text-red-200"
@@ -236,6 +232,11 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
 // Footer Component
 const Footer = ({ setCurrentPage }: any) => {
   const [email, setEmail] = useState("");
+
+  const handleNavClick = (page: string) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
+  };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -279,10 +280,12 @@ const Footer = ({ setCurrentPage }: any) => {
       {/* Footer Content */}
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
-          <h4 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <div className="bg-red-700 text-white px-3 py-1 rounded">Mak</div>
-            <span>Wines</span>
-          </h4>
+          <div
+            className="text-3xl sm:text-3xl text-white cursor-pointer whitespace-nowrap"
+            onClick={() => handleNavClick("home")}
+          >
+            Mak <span className="font-bold">Wines</span>
+          </div>
           <p className="text-gray-400 text-sm">
             Your premier destination for quality drinks at unbeatable prices.
           </p>
@@ -298,7 +301,7 @@ const Footer = ({ setCurrentPage }: any) => {
           <ul className="space-y-2 text-sm text-gray-400">
             <li>
               <button
-                onClick={() => setCurrentPage("about")}
+                onClick={() => handleNavClick("about")}
                 className="hover:text-white transition"
               >
                 About Us
@@ -306,7 +309,7 @@ const Footer = ({ setCurrentPage }: any) => {
             </li>
             <li>
               <button
-                onClick={() => setCurrentPage("store-finder")}
+                onClick={() => handleNavClick("store-finder")}
                 className="hover:text-white transition"
               >
                 Store Finder
@@ -314,7 +317,7 @@ const Footer = ({ setCurrentPage }: any) => {
             </li>
             <li>
               <button
-                onClick={() => setCurrentPage("contact")}
+                onClick={() => handleNavClick("contact")}
                 className="hover:text-white transition"
               >
                 Contact Us
@@ -322,7 +325,7 @@ const Footer = ({ setCurrentPage }: any) => {
             </li>
             <li>
               <button
-                onClick={() => setCurrentPage("careers")}
+                onClick={() => handleNavClick("careers")}
                 className="hover:text-white transition"
               >
                 Careers
@@ -336,7 +339,7 @@ const Footer = ({ setCurrentPage }: any) => {
           <ul className="space-y-2 text-sm text-gray-400">
             <li>
               <button
-                onClick={() => setCurrentPage("products")}
+                onClick={() => handleNavClick("products")}
                 className="hover:text-white transition"
               >
                 Spirits
@@ -344,7 +347,7 @@ const Footer = ({ setCurrentPage }: any) => {
             </li>
             <li>
               <button
-                onClick={() => setCurrentPage("products")}
+                onClick={() => handleNavClick("products")}
                 className="hover:text-white transition"
               >
                 Wine
@@ -352,7 +355,7 @@ const Footer = ({ setCurrentPage }: any) => {
             </li>
             <li>
               <button
-                onClick={() => setCurrentPage("products")}
+                onClick={() => handleNavClick("products")}
                 className="hover:text-white transition"
               >
                 Beers & Ciders
@@ -360,7 +363,7 @@ const Footer = ({ setCurrentPage }: any) => {
             </li>
             <li>
               <button
-                onClick={() => setCurrentPage("products")}
+                onClick={() => handleNavClick("products")}
                 className="hover:text-white transition"
               >
                 Soft Drinks
@@ -374,7 +377,7 @@ const Footer = ({ setCurrentPage }: any) => {
           <ul className="space-y-2 text-sm text-gray-400">
             <li>
               <button
-                onClick={() => setCurrentPage("privacy")}
+                onClick={() => handleNavClick("privacy")}
                 className="hover:text-white transition"
               >
                 Privacy Policy
@@ -382,7 +385,7 @@ const Footer = ({ setCurrentPage }: any) => {
             </li>
             <li>
               <button
-                onClick={() => setCurrentPage("terms")}
+                onClick={() => handleNavClick("terms")}
                 className="hover:text-white transition"
               >
                 Terms & Conditions
@@ -390,7 +393,7 @@ const Footer = ({ setCurrentPage }: any) => {
             </li>
             <li>
               <button
-                onClick={() => setCurrentPage("cookies")}
+                onClick={() => handleNavClick("cookies")}
                 className="hover:text-white transition"
               >
                 Cookie Policy
@@ -906,7 +909,9 @@ const CookiesPage = () => (
 
 const CareersPage = () => (
   <div className="max-w-4xl mx-auto px-4 py-12">
-    <h1 className="text-4xl font-bold mb-8">Careers at Mak Wines</h1>
+    <h1 className="text-4xl font-bold mb-8 text-red-700">
+      Careers at Mak Wines
+    </h1>
     <div className="bg-red-700 text-white p-8 rounded-lg mb-8">
       <h2 className="text-2xl font-bold mb-4">Join Our Team</h2>
       <p className="text-lg">
@@ -917,7 +922,7 @@ const CareersPage = () => (
 
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-bold mb-2">Store Manager</h3>
+        <h3 className="text-xl font-bold mb-2 text-red-700">Store Manager</h3>
         <p className="text-gray-600 mb-2">
           Location: 6 Peachcroft Shopping Centre,
           <br /> Peachcroft road,
@@ -936,7 +941,7 @@ const CareersPage = () => (
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-bold mb-2">Sales Associate</h3>
+        <h3 className="text-xl font-bold mb-2 text-red-700">Sales Associate</h3>
         <p className="text-gray-600 mb-2">Location: Birmingham | Part-time</p>
         <p className="text-gray-700 mb-4">
           Join our team as a sales associate. Perfect for someone with a passion
@@ -948,7 +953,9 @@ const CareersPage = () => (
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-bold mb-2">Warehouse Operative</h3>
+        <h3 className="text-xl font-bold mb-2 text-red-700">
+          Warehouse Operative
+        </h3>
         <p className="text-gray-600 mb-2">Location: London | Full-time</p>
         <p className="text-gray-700 mb-4">
           We're looking for reliable warehouse operatives to join our
@@ -961,7 +968,9 @@ const CareersPage = () => (
     </div>
 
     <div className="mt-12 bg-gray-50 p-8 rounded-lg">
-      <h3 className="text-2xl font-bold mb-4">Why Work With Us?</h3>
+      <h3 className="text-2xl font-bold mb-4 text-red-700">
+        Why Work With Us?
+      </h3>
       <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
         <li className="flex items-start gap-2">
           <span className="text-red-700 font-bold">✓</span>
