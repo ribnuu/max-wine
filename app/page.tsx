@@ -99,9 +99,9 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
   ];
 
   return (
-    <nav className="bg-red-700 text-white sticky top-0 z-50 shadow-lg">
+    <nav className="bg-red-800 text-white sticky top-0 z-50 shadow-lg ">
       {/* Top Bar */}
-      <div className="bg-red-800 py-2 px-4">
+      <div className="bg-red-800 py-2 px-4 border-b-2 border-white sticky top-0 z-50 shadow-lg">
         <div className="max-w-7xl mx-auto flex justify-between items-center text-sm">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
@@ -126,8 +126,9 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
             className="text-2xl font-bold cursor-pointer flex items-center gap-2"
             onClick={() => setCurrentPage("home")}
           >
-            <div className="bg-white text-red-700 px-3 py-1 rounded">Mak</div>
-            <span>Wines</span>
+            <div className="text-white px-5 py-1 rounded text-2xl font-extrabold flex justify-center items-center">
+              Mak Wines
+            </div>
           </div>
 
           {/* Desktop Navigation */}
@@ -169,6 +170,7 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
           <button
             className="lg:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
               <X className="w-6 h-6" />
