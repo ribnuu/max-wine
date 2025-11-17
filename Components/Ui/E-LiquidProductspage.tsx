@@ -193,7 +193,7 @@ const eLiquidProducts = [
 
 export default function ELiquidProductsPage() {
   const [visible, setVisible] = useState(8); // show 8 products at first
-  const [selected, setSelected] = useState(null); // modal product
+  const [selected, setSelected] = useState<Product | null>(null); // modal product
 
   // Define your Product type if not already defined
   type Product = {
