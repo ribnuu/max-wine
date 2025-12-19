@@ -426,7 +426,6 @@ const HomePage = ({ setCurrentPage }: any) => {
           backgroundImage:
             "url('https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1200')",
           backgroundBlendMode: "overlay",
-          // backgroundColor: "rgba(127, 29, 29, 0.7)",
         }}
       >
         <div className="max-w-7xl mx-auto px-4">
