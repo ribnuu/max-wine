@@ -13,70 +13,97 @@ import {
   Facebook,
   Twitter,
   Instagram,
+  ArrowLeft,
 } from "lucide-react";
 import FilterPage from "@/Components/Ui/FilterPage";
 import ELiquidProductsPage from "@/Components/Ui/E-LiquidProductspage";
+import HeroSlide from "@/Components/Ui/Hero-Slide";
+import Image from "next/image";
+// import CardDeck from "@/Components/Ui/Card-deck";
 
 // Mock Data
 const deals = [
   {
     id: 1,
-    title: "Spirit Of The Month",
+    title: "Spirit Of The Week",
     image: "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
     link: "/latest-deals",
   },
   {
     id: 2,
-    title: "Wine Of The Month",
+    title: "Wine Of The Week",
     image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400",
     link: "/latest-deals",
   },
   {
     id: 3,
-    title: "Ale Of The Month",
+    title: "Ale Of The Week",
     image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400",
     link: "/latest-deals",
   },
   {
     id: 4,
-    title: "Cocktail Of The Month",
+    title: "Vapes & E-Liquids",
     image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400",
     link: "/latest-deals",
   },
   {
     id: 5,
-    title: "Only £15.99 Each",
+    title: "£15.99",
     image: "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400",
     link: "/offers",
   },
   {
     id: 6,
-    title: "2 for £11.50",
+    title: "£11.50",
     image: "https://images.unsplash.com/photo-1584225064785-c62a8b43d148?w=400",
     link: "/offers",
   },
   {
     id: 7,
-    title: "2 for £13",
+    title: "£13.00",
     image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=400",
     link: "/offers",
   },
   {
     id: 8,
-    title: "2 For £14",
+    title: "£14.00",
     image: "/istockphoto-1808368424-612x612.jpg",
     link: "/offers",
   },
 ];
 
 const categories = [
-  { name: "Spirits", link: "/products/spirits" },
-  { name: "Wine", link: "/products/wine" },
-  { name: "Beers & Ciders", link: "/products/beers" },
-  { name: "Ready to Drink", link: "/products/rtd" },
-  { name: "Low And No", link: "/products/low-no" },
-  { name: "Soft Drinks", link: "/products/soft-drinks" },
-  { name: "Snacks", link: "/products/snacks" },
+  {
+    name: "Spirits",
+    link: "/products/spirits",
+    image: require("@/public/Images/categories/Spirits.webp"),
+  },
+  {
+    name: "Wines",
+    link: "/products/wine",
+    image: require("@/public/Images/categories/wines.jpg"),
+  },
+  {
+    name: "Beers & Ciders",
+    link: "/products/beers",
+    image: require("@/public/Images/categories/Beers.jpeg"),
+  },
+  {
+    name: "Ready Mixed Drinks",
+    link: "/products/rtd",
+    image: require("@/public/Images/categories/Ready Mixed Drinks.jpeg"),
+  },
+  {
+    name: "Sweets",
+    link: "/products/low-no",
+    image: require("@/public/Images/categories/Sweets.jpeg"),
+  },
+  {
+    name: "Vapes & E-Liquids",
+    link: "/products/soft-drinks",
+    image: require("@/public/Images/categories/Vapes & E-Liquids.webp"),
+  },
 ];
 
 // Navigation Component
@@ -84,18 +111,17 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<any>(null);
 
-  const navItems = [
+  type NavItem = {
+    name: string;
+    page: string;
+    dropdown?: { name: string; page: string }[];
+  };
+
+  const navItems: NavItem[] = [
     { name: "Home", page: "home" },
     { name: "Offers", page: "offers" },
-    { name: "Latest Deals", page: "latest-deals" },
-    // { name: "Festive Drinks", page: "festive" },
-    { name: "Mak's Bar", page: "bar" },
-    { name: "E-Liquid & Vapes", page: "eliquid" },
-    {
-      name: "Products",
-      page: "products",
-      dropdown: categories,
-    },
+    { name: "Week Deals", page: "Week-deals" },
+    { name: "Vapes & E-Liquids", page: "eliquid" },
   ];
 
   const handleNavClick = (page: string) => {
@@ -104,25 +130,7 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
   };
 
   return (
-    <nav className="bg-red-800 text-white sticky top-0 z-50 shadow-lg ">
-      {/* Top Bar */}
-      <div className="bg-red-800 py-2 px-4 border-b border-white">
-        <div className="max-w-7xl mx-auto flex justify-between items-center text-sm">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
-              <Phone className="w-4 h-4" /> 01235 531 063
-            </span>
-            <span className="flex items-center gap-1">
-              <Mail className="w-4 h-4" /> info@makwines.com
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <User className="w-5 h-5 cursor-pointer hover:text-red-200" />
-            <ShoppingCart className="w-5 h-5 cursor-pointer hover:text-red-200" />
-          </div>
-        </div>
-      </div>
-
+    <nav className="bg-[#660033] text-white sticky top-0 z-50 shadow-lg">
       {/* Main Navigation */}
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-20 gap-8">
@@ -139,38 +147,17 @@ const Navigation = ({ currentPage, setCurrentPage }: any) => {
             {navItems.map((item) => (
               <div key={item.name} className="relative group">
                 <button
-                  onClick={() => !item.dropdown && handleNavClick(item.page)}
+                  onClick={() => handleNavClick(item.page)}
                   className="flex items-center gap-1 hover:text-red-200 transition py-2"
                 >
                   {item.name}
-                  {item.dropdown && <ChevronDown className="w-4 h-4" />}
                 </button>
-                {item.dropdown && (
-                  <div className="absolute top-full left-0 bg-white text-gray-800 shadow-lg rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-48">
-                    {item.dropdown.map((subItem) => (
-                      <button
-                        key={subItem.name}
-                        onClick={() => handleNavClick("products")}
-                        className="block w-full text-left px-4 py-2 hover:bg-red-50 transition"
-                      >
-                        {subItem.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
-            <button
-              onClick={() => handleNavClick("store-finder")}
-              className="flex items-center gap-1 bg-red-600 hover:bg-red-500 px-4 py-2 rounded transition"
-            >
-              <MapPin className="w-4 h-4" />
-              Store Finder
-            </button>
           </div>
 
           {/* Mobile Menu Toggle */}
-          <div className="lg:hidden absolute right-4">
+          <div className="md:hidden absolute right-4">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
@@ -247,12 +234,12 @@ const Footer = ({ setCurrentPage }: any) => {
   return (
     <footer className="bg-gray-900 text-white mt-12">
       {/* Newsletter */}
-      <div className="bg-red-700 py-8">
+      <div className="bg-[#660033] py-8">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center">
             <h3 className="text-2xl font-bold mb-2">Mak Wines News</h3>
             <p className="mb-4">
-              Join and find out about all of our latest deals
+              Join and find out about all of our Week deals
             </p>
             <form
               onSubmit={handleSubmit}
@@ -263,7 +250,7 @@ const Footer = ({ setCurrentPage }: any) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-2 rounded text-white border-2 border-white bg-red-600 focus:outline-"
+                className="flex-1 px-4 py-2 rounded text-white border-2 border-white bg-[#660033] focus:outline-"
                 required
               />
               <button
@@ -278,7 +265,7 @@ const Footer = ({ setCurrentPage }: any) => {
       </div>
 
       {/* Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <div
             className="text-3xl sm:text-3xl text-white cursor-pointer whitespace-nowrap"
@@ -289,15 +276,28 @@ const Footer = ({ setCurrentPage }: any) => {
           <p className="text-gray-400 text-sm">
             Your premier destination for quality drinks at unbeatable prices.
           </p>
-          <div className="flex gap-4 mt-4">
+          <div>
+            <div className="space-y-4 text-gray-400 mt-4  ">
+              <p className="flex items-center gap-2">
+                <Mail className="w-5 h-5 text-gray-400" /> mak@makwines.co.uk
+              </p>
+              <p className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-gray-400" /> 6 Peachcroft
+                Shopping Centre,
+                <br /> Peachcroft road, Abingdon,
+                <br /> Oxfordshire, OX14 2QA.
+              </p>
+            </div>
+          </div>
+          {/* <div className="flex gap-4 mt-4">
             <Facebook className="w-5 h-5 cursor-pointer hover:text-red-500 transition" />
             <Twitter className="w-5 h-5 cursor-pointer hover:text-red-500 transition" />
             <Instagram className="w-5 h-5 cursor-pointer hover:text-red-500 transition" />
-          </div>
+          </div> */}
         </div>
 
-        <div>
-          <h5 className="font-semibold mb-4">Quick Links</h5>
+        <div className="ml-35">
+          <h5 className="font-semibold mb-3">Company</h5>
           <ul className="space-y-2 text-sm text-gray-400">
             <li>
               <button
@@ -309,71 +309,17 @@ const Footer = ({ setCurrentPage }: any) => {
             </li>
             <li>
               <button
-                onClick={() => handleNavClick("store-finder")}
-                className="hover:text-white transition"
-              >
-                Store Finder
-              </button>
-            </li>
-            <li>
-              <button
                 onClick={() => handleNavClick("contact")}
                 className="hover:text-white transition"
               >
                 Contact Us
               </button>
             </li>
-            <li>
-              <button
-                onClick={() => handleNavClick("careers")}
-                className="hover:text-white transition"
-              >
-                Careers
-              </button>
-            </li>
           </ul>
         </div>
 
-        <div>
-          <h5 className="font-semibold mb-4">Categories</h5>
-          <ul className="space-y-2 text-sm text-gray-400">
-            <li>
-              <button
-                onClick={() => handleNavClick("products")}
-                className="hover:text-white transition"
-              >
-                Spirits
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavClick("products")}
-                className="hover:text-white transition"
-              >
-                Wine
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavClick("products")}
-                className="hover:text-white transition"
-              >
-                Beers & Ciders
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavClick("products")}
-                className="hover:text-white transition"
-              >
-                Soft Drinks
-              </button>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h5 className="font-semibold mb-4">Legal</h5>
+        <div className="ml-35">
+          <h5 className="font-semibold mb-3">Legal</h5>
           <ul className="space-y-2 text-sm text-gray-400">
             <li>
               <button
@@ -415,13 +361,313 @@ const Footer = ({ setCurrentPage }: any) => {
   );
 };
 
+// Sample Product Data
+const productsByCategory: Record<
+  string,
+  { id: number; name: string; image: string; category: string }[]
+> = {
+  Spirits: [
+    {
+      id: 1,
+      name: "Premium Vodka",
+      image: "/Images/Spirits/Gordon's dry gin pink edition.png",
+      category: "Spirits",
+    },
+    {
+      id: 2,
+      name: "Scottish Whisky",
+      image: "/Images/Spirits/Smirnoff Red label.jpeg",
+      category: "Spirits",
+    },
+    {
+      id: 3,
+      name: "London Dry Gin",
+      image: "/Images/Spirits/Captain morgan Original special gold.jpeg",
+      category: "Spirits",
+    },
+    {
+      id: 4,
+      name: "Dark Rum",
+      image: "/Images/Spirits/Buffalo trace bourbon.jpeg",
+      category: "Spirits",
+    },
+    {
+      id: 5,
+      name: "Blended Whisky",
+      image:
+        "/Images/Spirits/Appleton estate 21 years old nassau valley casks.jpeg",
+      category: "Spirits",
+    },
+    {
+      id: 6,
+      name: "Premium Tequila",
+      image: "/Images/Spirits/Chivas legal.jpg",
+      category: "Spirits",
+    },
+  ],
+  Wines: [
+    {
+      id: 7,
+      name: "Red Wine Cabernet",
+      image: "/Images/Wines/Canti Prosecco.jpeg",
+      category: "Wines",
+    },
+    {
+      id: 8,
+      name: "White Wine Chardonnay",
+      image: "/Images/Wines/Chardonnay Rich and smooth.jpeg",
+      category: "Wines",
+    },
+    {
+      id: 9,
+      name: "Rosé Wine",
+      image: "/Images/Wines/High tide.png",
+      category: "Wines",
+    },
+    {
+      id: 10,
+      name: "Sparkling Wine",
+      image: "/Images/Wines/Isla Negra.png",
+      category: "Wines",
+    },
+    {
+      id: 11,
+      name: "Merlot Red Wine",
+      image: "/Images/Wines/Pinot Grigio.jpeg",
+      category: "Wines",
+    },
+    {
+      id: 12,
+      name: "Pinot Grigio",
+      image: "/Images/Wines/Prosecco.jpeg",
+      category: "Wines",
+    },
+    {
+      id: 13,
+      name: "Sparkling Wine",
+      image: "/Images/Wines/Sauvignon Blanc Oyster bay.jpeg",
+      category: "Wines",
+    },
+    {
+      id: 14,
+      name: "Merlot Red Wine",
+      image: "/Images/Wines/Chardonnay.jpeg",
+      category: "Wines",
+    },
+    {
+      id: 15,
+      name: "Pinot Grigio",
+      image: "/Images/Wines/Villa Maria.jpeg",
+      category: "Wines",
+    },
+    {
+      id: 16,
+      name: "Sparkling Wine",
+      image: "/Images/Wines/Sauvignon Blanc.jpeg",
+      category: "Wines",
+    },
+    {
+      id: 17,
+      name: "Merlot Red Wine",
+      image: "/Images/Wines/Jacob's Creek.jpg",
+      category: "Wines",
+    },
+    // {
+    //   id: 18,
+    //   name: "Pinot Grigio",
+    //   image:
+    //     "https://images.unsplash.com/photo-1584225064785-c62a8b43d148?w=400",
+    //   category: "Wines",
+    // },
+  ],
+  "Beers & Ciders": [
+    {
+      id: 13,
+      name: "Premium Lager",
+      image:
+        "/Images/Beers & Cider's/pexels-paul-espinoza-841364529-30271798.jpg",
+      category: "Beers & Ciders",
+    },
+    {
+      id: 14,
+      name: "Craft IPA",
+      image: "/Images/Beers & Cider's/pexels-introspectivedsgn-9646267.jpg",
+      category: "Beers & Ciders",
+    },
+    {
+      id: 15,
+      name: "Apple Cider",
+      image: "/Images/Beers & Cider's/pexels-thatguycraig000-1634074.jpg",
+      category: "Beers & Ciders",
+    },
+    {
+      id: 16,
+      name: "Dark Ale",
+      image: "/Images/Beers & Cider's/pexels-brettjordan-25311376.jpg",
+      category: "Beers & Ciders",
+    },
+    {
+      id: 17,
+      name: "Wheat Beer",
+      image: "/Images/Beers & Cider's/pexels-ron-martinez-2313692-4044674.jpg",
+      category: "Beers & Ciders",
+    },
+    {
+      id: 18,
+      name: "Pear Cider",
+      image:
+        "/Images/Beers & Cider's/pexels-christina-petsos-200616875-11568810.jpg",
+      category: "Beers & Ciders",
+    },
+  ],
+  "Ready Mixed Drinks": [
+    {
+      id: 19,
+      name: "Mojito Mix",
+      image:
+        "/Images/Ready mixed drinks/pexels-8pcarlos-morocho-2150734957-35174177.jpg",
+      category: "Ready Mixed Drinks",
+    },
+    {
+      id: 20,
+      name: "Margarita Mix",
+      image:
+        "/Images/Ready mixed drinks/pexels-ajit-shahu-1794732582-28321215.jpg",
+      category: "Ready Mixed Drinks",
+    },
+    {
+      id: 21,
+      name: "Cosmopolitan Mix",
+      image:
+        "/Images/Ready mixed drinks/pexels-alle-alonso-3429039-5116860.jpg",
+      category: "Ready Mixed Drinks",
+    },
+    {
+      id: 22,
+      name: "Long Island Mix",
+      image: "/Images/Ready mixed drinks/pexels-bilakis-12360658.jpg",
+      category: "Ready Mixed Drinks",
+    },
+    {
+      id: 23,
+      name: "Pina Colada Mix",
+      image:
+        "/Images/Ready mixed drinks/pexels-christopher-welsch-leveroni-2150186467-31562022.jpg",
+      category: "Ready Mixed Drinks",
+    },
+    {
+      id: 24,
+      name: "Daiquiri Mix",
+      image:
+        "/Images/Ready mixed drinks/pexels-collab-media-173741945-27626300.jpg",
+      category: "Ready Mixed Drinks",
+    },
+  ],
+  Sweets: [
+    {
+      id: 25,
+      name: "Chocolate Bars",
+      image: "/Images/Sweets/pexels-pixabay-33239.jpg",
+      category: "Sweets",
+    },
+    {
+      id: 26,
+      name: "Gummy Bears",
+      image: "/Images/Sweets/pexels-anna-belousova-130658517-10325488.jpg",
+      category: "Sweets",
+    },
+    {
+      id: 27,
+      name: "Hard Candys",
+      image: "/Images/Sweets/pexels-nietjuhart-30399678.jpg",
+      category: "Sweets",
+    },
+    {
+      id: 28,
+      name: "Lollipops",
+      image: "/Images/Sweets/pexels-wwarby-19599854.jpg",
+      category: "Sweets",
+    },
+    {
+      id: 29,
+      name: "Chocolate Truffles",
+      image: "/Images/Sweets/pexels-planka-28892456.jpg",
+      category: "Sweets",
+    },
+    {
+      id: 30,
+      name: "Fruit Jellies",
+      image: "/Images/Sweets/pexels-daniblaj95-6007945.jpg",
+      category: "Sweets",
+    },
+  ],
+  "Vapes & E-Liquids": [
+    {
+      id: 31,
+      name: "Elf Bar Raya D2",
+      image: "/Images/Vapes & E-Liquids/Elf-bar-raya-d2.webp",
+      category: "Vapes & E-Liquids",
+    },
+    {
+      id: 32,
+      name: "Fruit Bomb 130ml 30mg",
+      image: "/Images/Vapes & E-Liquids/fruit-bomb2-130ml-30mg.webp",
+      category: "Vapes & E-Liquids",
+    },
+    {
+      id: 33,
+      name: "Caliburn G2 Carbon Black",
+      image: "/Images/Vapes & E-Liquids/Caliburn-g2-carbon-black.jpg",
+      category: "Vapes & E-Liquids",
+    },
+    {
+      id: 34,
+      name: "Tokyo Iced Peach 30ml",
+      image: "/Images/Vapes & E-Liquids/Tokyo-Iced-Peach-30ml.webp",
+      category: "Vapes & E-Liquids",
+    },
+    {
+      id: 35,
+      name: "Cherry Cola",
+      image: "/Images/Vapes & E-Liquids/Cherry Cola.webp",
+      category: "Vapes & E-Liquids",
+    },
+    {
+      id: 36,
+      name: "Blueberry Raspberry",
+      image: "/Images/Vapes & E-Liquids/Canada-blueberry-raspberry.webp",
+      category: "Vapes & E-Liquids",
+    },
+  ],
+};
+ 
 // Home Page Component
 const HomePage = ({ setCurrentPage }: any) => {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleCategoryClick = (categoryName: string) => {
+    setIsAnimating(true);
+    setTimeout(() => {
+      setSelectedCategory(categoryName);
+      setIsAnimating(false);
+    }, 300);
+  };
+
+  const handleGoBack = () => {
+    setIsAnimating(true);
+    setTimeout(() => {
+      setSelectedCategory(null);
+      setIsAnimating(false);
+    }, 300);
+  };
+
   return (
     <div>
       {/* Hero Section */}
-      <div
-        className="relative text-white py-50 image-full bg-cover bg-center mb-12"
+      <HeroSlide />
+      {/* <div
+        className="relative text-white py-72 image-full bg-cover bg-center mb-12"
         style={{
           backgroundImage:
             "url('https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1200')",
@@ -438,8 +684,104 @@ const HomePage = ({ setCurrentPage }: any) => {
               onClick={() => setCurrentPage("offers")}
               className="bg-white text-red-700 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg transition"
             >
-              Shop Latest Offers
+              View Latest Offers
             </button>
+          </div>
+        </div>
+      </div> */}
+
+      {/* Categories Section */}
+      <div className="bg-gray-50 py-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-8 text-center text-red-700">
+            {selectedCategory ? selectedCategory : "Shop By Category"}
+          </h2>
+
+          {/* Category Cards or Product Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {!selectedCategory ? (
+              // Display Category Cards
+              categories.map((category, index) => (
+                <button
+                  key={category.name}
+                  onClick={() => handleCategoryClick(category.name)}
+                  className="hover:shadow-2xl transition-all transform hover:-translate-y-1 overflow-hidden cursor-pointer min-h-80px flex flex-col rounded-2xl"
+                  style={{
+                    transform: isAnimating ? "scale(0.7)" : "scale(1)",
+                    transition: "transform 0.4s ease-in-out",
+                  }}
+                >
+                  {/* IMAGE AREA WITH TEXT ON TOP */}
+                  <div className="relative h-48 w-full">
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      fill
+                      className="object-cover"
+                    />
+
+                    {/* FLOATING TEXT IN CENTER */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                      <h3 className="text-white font-semibold text-xl text-center">
+                        {category.name}
+                      </h3>
+                    </div>
+                  </div>
+                </button>
+              ))
+            ) : (
+              // Display Products with Go Back Card
+              <>
+                {/* Go Back Card */}
+                <button
+                  onClick={handleGoBack}
+                  className="bg-[#660033] text-white rounded-xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1 flex flex-col items-center justify-center gap-3 min-h-[280px] hover:bg-[#550028]"
+                  style={{
+                    transform: isAnimating ? "scale(0.7)" : "scale(1)",
+                    transition: "transform 0.4s ease-in-out",
+                  }}
+                >
+                  <ArrowLeft className="w-8 h-8" />
+                  <span className="text-lg font-semibold">Go Back</span>
+                </button>
+
+                {/* Product Cards */}
+                {productsByCategory[selectedCategory]?.map((product, index) => (
+                  <div
+                    key={product.id}
+                    className="bg-[#660033] rounded-xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1 overflow-hidden cursor-pointer"
+                    style={{
+                      transform: isAnimating ? "scale(0.7)" : "scale(1)",
+                      transition: "transform 0.4s ease-in-out",
+                      // backgroundImage: `url(/products/${product.image})`,
+                      // backgroundSize: "cover",
+                      // backgroundPosition: "center",
+                      // transform: isAnimating ? "scale(0.7)" : "scale(1)",
+                      // transition: "transform 0.4s ease-in-out",
+                    }}
+                  >
+                    <div className="relative h-48 w-full bg-gray-200">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          objectPosition: "center",
+                        }}
+                      />
+                    </div>
+                    <div className="p-4 text-center">
+                      <h3 className="font-semibold text-white text-base">
+                        {product.name}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -447,45 +789,25 @@ const HomePage = ({ setCurrentPage }: any) => {
       {/* Latest Deals Section */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold mb-8 text-center text-red-700">
-          Latest Deals
+          Week Deals
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-red-700">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-white">
           {deals.map((deal) => (
             <div
               key={deal.id}
-              onClick={() => setCurrentPage("latest-deals")}
-              className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition transform hover:-translate-y-1"
+              onClick={() => setCurrentPage("Week-deals")}
+              className="bg-[#660033] hover:shadow-2xl transition-all transform hover:-translate-y-1 overflow-hidden cursor-pointer min-h-80px flex flex-col rounded-2xl"
             >
               <img
                 src={deal.image}
                 alt={deal.title}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 sm:h-56 lg:h-64 object-cover"
               />
               <div className="p-4">
                 <h3 className="font-semibold text-lg">{deal.title}</h3>
               </div>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* Categories Section */}
-      <div className="bg-gray-50 py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 text-center text-red-700">
-            Shop By Category
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 text-red-700">
-            {categories.map((category) => (
-              <button
-                key={category.name}
-                onClick={() => setCurrentPage("products")}
-                className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition text-center font-semibold hover:bg-red-50"
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </div>
@@ -496,37 +818,37 @@ const HomePage = ({ setCurrentPage }: any) => {
 const OffersPage = () => {
   const offers = [
     {
-      title: "2 for £11.50",
-      desc: "Selected Spirits",
+      title: "£11.50",
+      desc: "Spirits",
       image:
         "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400",
     },
     {
-      title: "2 for £13",
+      title: "£13.00",
       desc: "Premium Wines",
       image:
         "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400",
     },
     {
-      title: "2 for £14",
-      desc: "Craft Beers",
+      title: "£14.00",
+      desc: "Beers & Ciders",
       image:
         "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400",
     },
     {
-      title: "£15.99 Each",
-      desc: "Premium Whisky",
+      title: "£15.99",
+      desc: "Vapes & E-Liquids",
       image:
         "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400",
     },
     {
-      title: "3 for £6",
-      desc: "Ready to Drink",
+      title: "£30.00",
+      desc: "Ready Mixed Drinks",
       image:
         "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400",
     },
     {
-      title: "4 for £11",
+      title: "£11.00",
       desc: "Soft Drinks",
       image:
         "https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=400",
@@ -536,7 +858,7 @@ const OffersPage = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold mb-8 text-red-700">Special Offers</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-3 gap-8">
         {offers.map((offer, idx) => (
           <div
             key={idx}
@@ -548,12 +870,12 @@ const OffersPage = () => {
               className="w-full h-64 object-cover"
             />
             <div className="p-6">
-              <h3 className="text-2xl font-bold text-red-700 mb-2">
+              <h3 className=" text-white font-bold text-lg mb-3 bg-red-600 rounded-4xl px-2 py-1 inline-block">
                 {offer.title}
               </h3>
               <p className="text-gray-600">{offer.desc}</p>
-              <button className="mt-4 bg-red-700 text-white px-6 py-2 rounded hover:bg-red-600 transition">
-                Shop Now
+              <button className="mt-4 bg-red-700 text-white px-6 py-2 rounded-3xl hover:bg-red-600 transition">
+                View
               </button>
             </div>
           </div>
@@ -567,8 +889,8 @@ const OffersPage = () => {
 const LatestDealsPage = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-8 text-red-700">Latest Deals</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <h1 className="text-4xl font-bold mb-8 text-red-700">Week Deals</h1>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {deals.slice(0, 6).map((deal) => (
           <div
             key={deal.id}
@@ -577,13 +899,13 @@ const LatestDealsPage = () => {
             <img
               src={deal.image}
               alt={deal.title}
-              className="w-full h-56 object-cover"
+              className="w-full h-48 sm:h-56 lg:h-64 object-cover"
             />
             <div className="p-6">
               <h3 className="text-xl font-bold mb-2 text-red-700">
                 {deal.title}
               </h3>
-              <button className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+              <button className="bg-red-700 text-white px-4 py-2 rounded-4xl hover:bg-red-600 transition">
                 View Deal
               </button>
             </div>
@@ -594,67 +916,19 @@ const LatestDealsPage = () => {
   );
 };
 
-// Other Pages (simplified for space)
-// const FestivePage = () => (
-//   <div className="max-w-7xl mx-auto px-4 py-12">
-//     <h1 className="text-4xl font-bold mb-8 text-red-700">Festive Drinks</h1>
-//     <div className="bg-linear-to-r from-green-700 to-red-700 text-white p-12 rounded-lg mb-8">
-//       <h2 className="text-3xl font-bold mb-4">Celebrate in Style</h2>
-//       <p className="text-xl">
-//         Discover our festive collection of champagnes, wines, and spirits
-//         perfect for your celebrations
-//       </p>
-//     </div>
-//     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-//       {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-//         <div key={i} className="bg-white p-6 rounded-lg shadow-lg">
-//           <div className="h-40 bg-gray-200 rounded mb-4"></div>
-//           <h3 className="font-bold mb-2 text-red-700">Festive Product {i}</h3>
-//           <p className="text-red-700 font-bold">£{15 + i * 2}.99</p>
-//         </div>
-//       ))}
-//     </div>
-//   </div>
-// );
-
-const BarPage = () => (
-  <div className="max-w-7xl mx-auto px-4 py-12">
-    <h1 className="text-4xl font-bold mb-8 text-red-700">Mak's Bar</h1>
-    <div className="bg-red-700 text-white p-12 rounded-lg mb-8">
-      <h2 className="text-3xl font-bold mb-4">Craft Your Perfect Cocktail</h2>
-      <p className="text-xl">Everything you need to become a home bartender</p>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-red-700">
-      {["Cocktail Kits", "Bar Tools", "Recipe Books"].map((item) => (
-        <div
-          key={item}
-          className="bg-white p-8 rounded-lg shadow-lg text-center"
-        >
-          <div className="h-48 bg-gray-200 rounded mb-4"></div>
-          <h3 className="text-xl font-bold">{item}</h3>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
 const ELiquidPage = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold mb-8 text-red-700"></h1>
       <ELiquidProductsPage />
-      {/* <p className="text-xl text-gray-600 mb-8">
-        Browse our wide selection of vapes and e-liquids
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-          <div key={i} className="bg-white p-6 rounded-lg shadow-lg">
-            <div className="h-40 bg-gray-200 rounded mb-4"></div>
-            <h3 className="font-bold mb-2 text-red-700">E-Liquid {i}</h3>
-            <p className="text-red-700 font-bold">£{8 + i}.99</p>
-          </div>
-        ))}
-      </div> */}
+    </div>
+  );
+};
+
+const CardDeck = () => {
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-12">
+      <h1 className="text-4xl font-bold mb-8 text-red-700"></h1>
     </div>
   );
 };
@@ -662,71 +936,7 @@ const ELiquidPage = () => {
 const ProductsPage = () => (
   <div className="max-w-7xl mx-auto px-4 py-12">
     <h1 className="text-4xl font-bold mb-8 text-red-700"></h1>
-    <FilterPage />
-    {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      {categories.map((cat) => (
-        <button
-          key={cat.name}
-          className="bg-red-700 text-white p-4 rounded-lg hover:bg-red-600 transition"
-        >
-          {cat.name}
-        </button>
-      ))}
-    </div> */}
-    {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
-        <div key={i} className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="h-48 bg-gray-200"></div>
-          <div className="p-4">
-            <h3 className="font-bold mb-2 text-red-700">Product Name {i}</h3>
-            <p className="text-gray-600 text-sm mb-2">Description of product</p>
-            <p className="text-red-700 font-bold text-xl">£{10 + i * 2}.99</p>
-            <button className="w-full mt-3 bg-red-700 text-white py-2 rounded hover:bg-red-600 transition">
-              Add to Cart
-            </button>
-          </div>
-        </div>
-      ))}
-    </div> */}
-  </div>
-);
-
-const StoreFinderPage = () => (
-  <div className="max-w-7xl mx-auto px-4 py-12">
-    <h1 className="text-4xl font-bold mb-8 text-red-700">Find a Store</h1>
-    <div className="bg-white p-8 rounded-lg shadow-lg mb-8">
-      <input
-        type="text"
-        placeholder="Enter your postcode or city"
-        className="w-full p-4 border-2 border-gray-300 rounded-lg text-lg"
-      />
-      <button className="mt-4 bg-red-700 text-white px-8 py-3 rounded-lg hover:bg-red-600 transition">
-        Search Stores
-      </button>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {[1, 2, 3, 4].map((i) => (
-        <div key={i} className="bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="font-bold text-xl mb-2 text-red-700">
-            Mak Wines - Store {i}
-          </h3>
-          <p className="text-gray-600 mb-2">
-            {" "}
-            6 Peachcroft Shopping Centre,
-            <br /> Peachcroft road,
-            <br /> Abingdon,
-            <br /> Oxfordshire,
-            <br /> OX14 2QA.
-          </p>
-          <p className="text-gray-600 mb-4">
-            Open: Mon-Sat 9am-10pm, Sun 10am-8pm
-          </p>
-          <button className="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-600 transition">
-            Get Directions
-          </button>
-        </div>
-      ))}
-    </div>
+    {/* <CardDeck /> */}
   </div>
 );
 
@@ -759,16 +969,15 @@ const AboutPage = () => (
 
 const ContactPage = () => (
   <div className="max-w-4xl mx-auto px-4 py-12">
-    <h1 className="text-4xl font-bold mb-8 text-red-700">Contact Us</h1>
+    <h1 className="text-4xl font-bold mb-8 text-red-700 border-color:black ">
+      Contact Us
+    </h1>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div>
         <h2 className="text-2xl font-bold mb-4 text-red-700">Get In Touch</h2>
-        <div className="space-y-4 text-gray-700">
+        <div className="space-y-4 text-red-700">
           <p className="flex items-center gap-2">
-            <Phone className="w-5 h-5 text-red-700" /> 01235 531 063
-          </p>
-          <p className="flex items-center gap-2">
-            <Mail className="w-5 h-5 text-red-700" /> info@makwines.com
+            <Mail className="w-5 h-5 text-red-700" /> mak@makwines.co.uk
           </p>
           <p className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-red-700" /> 6 Peachcroft Shopping
@@ -786,17 +995,17 @@ const ContactPage = () => (
           <input
             type="text"
             placeholder="Your Name"
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded text-red-700 "
           />
           <input
             type="email"
             placeholder="Your Email"
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded text-red-700"
           />
           <textarea
             placeholder="Your Message"
             rows={4}
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded text-red-700"
           ></textarea>
           <button
             type="submit"
@@ -1002,18 +1211,12 @@ const MakWinesApp = () => {
         return <HomePage setCurrentPage={setCurrentPage} />;
       case "offers":
         return <OffersPage />;
-      case "latest-deals":
+      case "Week-deals":
         return <LatestDealsPage />;
-      // case "festive":
-      //   return <FestivePage />;
-      case "bar":
-        return <BarPage />;
       case "eliquid":
         return <ELiquidPage />;
       case "products":
         return <ProductsPage />;
-      case "store-finder":
-        return <StoreFinderPage />;
       case "about":
         return <AboutPage />;
       case "contact":
@@ -1024,8 +1227,8 @@ const MakWinesApp = () => {
         return <TermsPage />;
       case "cookies":
         return <CookiesPage />;
-      case "careers":
-        return <CareersPage />;
+      // case "careers":
+      //   return <CareersPage />;
       default:
         return <HomePage setCurrentPage={setCurrentPage} />;
     }

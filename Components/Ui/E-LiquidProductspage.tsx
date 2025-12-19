@@ -217,7 +217,7 @@ export default function ELiquidProductsPage() {
       </p>
 
       {/* PRODUCT GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {eLiquidProducts.slice(0, visible).map((product) => (
           <div key={product.id} className="bg-white p-6 rounded-lg shadow-lg">
             {/* PRODUCT IMAGE */}
@@ -229,14 +229,14 @@ export default function ELiquidProductsPage() {
             <h3 className="font-bold mt-3 mb-1 text-red-700">{product.name}</h3>
 
             {/* PRICE */}
-            <p className="text-red-700 font-bold text-lg mb-3">
+            <p className="text-white font-bold text-lg mb-3 bg-red-700 rounded-4xl px-2 py-1 inline-block">
               £{product.price}
             </p>
 
             {/* VIEW BUTTON */}
             <button
               onClick={() => setSelected(product)}
-              className="w-full bg-red-700 text-white py-2 rounded hover:bg-red-600 transition"
+              className="w-full mt-3 bg-red-700 text-white py-2 rounded-full hover:bg-red-600 transition"
             >
               View
             </button>
@@ -258,12 +258,12 @@ export default function ELiquidProductsPage() {
 
       {/* PRODUCT MODAL */}
       {selected && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-xl relative">
+        <div className="fixed inset-0 bg-black/50 bg-opacity-60 flex items-center justify-center p-4">
+          <div className="bg-white p-10 rounded-lg w-full max-w-md shadow-xl relative">
             {/* CLOSE BUTTON */}
             <button
               onClick={() => setSelected(null)}
-              className="absolute right-3 top-3 text-gray-700 text-xl"
+              className="absolute right-2 top-2 text-red-600 text-1xl font-bold"
             >
               ✕
             </button>

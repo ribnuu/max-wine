@@ -5,9 +5,9 @@ const categories = [
   { name: "Spirits" },
   { name: "Wines" },
   { name: "Beers & Ciders" },
-  { name: "Ready to Drink" },
+  { name: "Ready Mixed Drinks" },
   { name: "Low and No" },
-  { name: "Soft Drinks" },
+  { name: "E - Liquids" },
   { name: "Snacks" },
 ];
 
@@ -16,9 +16,10 @@ const allProducts = [
   { id: 2, name: "Vodka Special", category: "Spirits", price: 15.99 },
   { id: 3, name: "Red Wine Classic", category: "Wines", price: 12.49 },
   { id: 4, name: "Cider Bottle", category: "Beers & Ciders", price: 4.99 },
-  { id: 5, name: "Whiskey Mini", category: "Spirits", price: 7.99 },
-  { id: 6, name: "Energy Drink", category: "Soft Drinks", price: 2.49 },
-  { id: 7, name: "Crispy Chips", category: "Snacks", price: 1.99 },
+  { id: 5, name: "Cider Bottle", category: "Beers & Ciders", price: 4.99 },
+  { id: 6, name: "Whiskey Mini", category: "Spirits", price: 7.99 },
+  { id: 7, name: "Energy Drink", category: "Soft Drinks", price: 2.49 },
+  { id: 8, name: "Crispy Chips", category: "Snacks", price: 1.99 },
 ];
 
 const FilterPage = () => {
@@ -64,8 +65,8 @@ const FilterPage = () => {
                 Category: {product.category}
               </p>
               <p className="text-red-700 font-bold text-xl">£{product.price}</p>
-              <button className="w-full mt-3 bg-red-700 text-white py-2 rounded hover:bg-red-600 transition">
-                Add to Cart
+              <button className="w-full mt-3 bg-red-700 text-white py-2 rounded-full hover:bg-red-600 transition">
+                View
               </button>
             </div>
           </div>
