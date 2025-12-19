@@ -640,7 +640,7 @@ const productsByCategory: Record<
     },
   ],
 };
- 
+
 // Home Page Component
 const HomePage = ({ setCurrentPage }: any) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
