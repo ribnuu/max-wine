@@ -44,12 +44,12 @@ const deals = [
   {
     id: 4,
     title: "Vapes & E-Liquids",
-    image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400",
+    image: "/Images/Vapes & E-Liquids/Vapes & E-liquids.jpg",
     link: "/latest-deals",
   },
   {
     id: 5,
-    title: "£15.99",
+    title: "Sweets Of The Week",
     image: "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400",
     link: "/offers",
   },
@@ -59,18 +59,18 @@ const deals = [
     image: "https://images.unsplash.com/photo-1584225064785-c62a8b43d148?w=400",
     link: "/offers",
   },
-  {
-    id: 7,
-    title: "£13.00",
-    image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=400",
-    link: "/offers",
-  },
-  {
-    id: 8,
-    title: "£14.00",
-    image: "/istockphoto-1808368424-612x612.jpg",
-    link: "/offers",
-  },
+  // {
+  //   id: 7,
+  //   title: "£13.00",
+  //   image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=400",
+  //   link: "/offers",
+  // },
+  // {
+  //   id: 8,
+  //   title: "£14.00",
+  //   image: "/istockphoto-1808368424-612x612.jpg",
+  //   link: "/offers",
+  // },
 ];
 
 const categories = [
@@ -692,7 +692,7 @@ const HomePage = ({ setCurrentPage }: any) => {
 
       {/* Categories Section */}
       <div className="bg-gray-50 py-12">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center text-red-700">
             {selectedCategory ? selectedCategory : "Shop By Category"}
           </h2>
@@ -787,7 +787,7 @@ const HomePage = ({ setCurrentPage }: any) => {
       </div>
 
       {/* Latest Deals Section */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto px-3 py-12">
         <h2 className="text-3xl font-bold mb-8 text-center text-red-700">
           Week Deals
         </h2>
