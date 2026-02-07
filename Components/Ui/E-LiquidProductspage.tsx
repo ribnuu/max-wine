@@ -192,7 +192,6 @@ const eLiquidProducts = [
 ];
 
 export default function ELiquidProductsPage() {
-  const [visible, setVisible] = useState(8); // show 8 products at first
   const [selected, setSelected] = useState<Product | null>(null); // modal product
 
   // Define your Product type if not already defined
@@ -207,36 +206,36 @@ export default function ELiquidProductsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
       {/* PAGE TITLE */}
-      <h1 className="text-4xl font-bold mb-4 text-red-700">
+      <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 text-red-700">
         E-Liquids & Vapes
       </h1>
-      <p className="text-lg text-gray-600 mb-10">
+      <p className="text-sm sm:text-lg text-gray-600 mb-6 sm:mb-10">
         Browse our wide selection of e-liquids
       </p>
 
       {/* PRODUCT GRID */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        {eLiquidProducts.slice(0, visible).map((product) => (
-          <div key={product.id} className="bg-white p-6 rounded-lg shadow-lg">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+        {eLiquidProducts.map((product) => (
+          <div key={product.id} className="bg-white p-3 sm:p-6 rounded-lg shadow-lg">
             {/* PRODUCT IMAGE */}
-            <div className="h-40 bg-gray-200 rounded flex items-center justify-center">
-              <img src={product.image} alt={product.name} className="h-full" />
+            <div className="h-28 sm:h-40 bg-white rounded flex items-center justify-center p-2">
+              <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain" />
             </div>
 
             {/* TITLE */}
-            <h3 className="font-bold mt-3 mb-1 text-red-700">{product.name}</h3>
+            <h3 className="font-bold mt-2 sm:mt-3 mb-1 text-red-700 text-sm sm:text-base line-clamp-2">{product.name}</h3>
 
             {/* PRICE */}
-            <p className="text-white font-bold text-lg mb-3 bg-red-700 rounded-4xl px-2 py-1 inline-block">
+            <p className="text-white font-bold text-sm sm:text-lg mb-2 sm:mb-3 bg-red-700 rounded-full px-2 py-0.5 sm:py-1 inline-block">
               £{product.price}
             </p>
 
             {/* VIEW BUTTON */}
             <button
               onClick={() => setSelected(product)}
-              className="w-full mt-3 bg-red-700 text-white py-2 rounded-full hover:bg-red-600 transition"
+              className="w-full mt-2 sm:mt-3 bg-red-700 text-white py-1.5 sm:py-2 rounded-full hover:bg-red-600 transition text-sm sm:text-base"
             >
               View
             </button>
@@ -244,60 +243,46 @@ export default function ELiquidProductsPage() {
         ))}
       </div>
 
-      {/* SEE MORE BUTTON */}
-      {visible < eLiquidProducts.length && (
-        <div className="text-center mt-8">
-          <button
-            onClick={() => setVisible((prev) => prev + 4)}
-            className="px-8 py-3 bg-red-700 text-white rounded-full hover:bg-red-600 transition"
-          >
-            See More +
-          </button>
-        </div>
-      )}
-
       {/* PRODUCT MODAL */}
       {selected && (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-60 flex items-center justify-center p-4">
-          <div className="bg-white p-10 rounded-lg w-full max-w-md shadow-xl relative">
+        <div className="fixed inset-0 bg-black/50 bg-opacity-60 flex items-center justify-center p-3 sm:p-4 z-50">
+          <div className="bg-white p-4 sm:p-10 rounded-lg w-full max-w-md shadow-xl relative max-h-[90vh] overflow-y-auto">
             {/* CLOSE BUTTON */}
             <button
               onClick={() => setSelected(null)}
-              className="absolute right-2 top-2 text-red-600 text-1xl font-bold"
+              className="absolute right-3 top-3 text-red-600 text-xl font-bold w-8 h-8 flex items-center justify-center"
             >
               ✕
             </button>
 
             {/* MODAL IMAGE */}
-            <div className="h-48 bg-gray-200 rounded flex items-center justify-center mb-4">
+            <div className="h-40 sm:h-48 bg-white rounded flex items-center justify-center mb-4 p-2">
               <img
                 src={selected.image}
                 alt={selected.name}
-                className="h-full"
+                className="max-h-full max-w-full object-contain"
               />
             </div>
 
-            <h2 className="text-2xl font-bold text-red-700 mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-red-700 mb-2">
               {selected.name}
             </h2>
 
             {/* PRODUCT DETAILS */}
-            <p className="text-gray-700">
-              <strong>Price:</strong> £{selected.price}
-            </p>
-            <p className="text-gray-700">
-              <strong>Flavor:</strong> {selected.flavor}
-            </p>
-            <p className="text-gray-700">
-              <strong>Strength:</strong> {selected.strength}
-            </p>
-            <p className="text-gray-700">
-              <strong>Size:</strong> {selected.size}
-            </p>
-
-            {/* <button className="mt-6 w-full bg-red-700 text-white py-2 rounded hover:bg-red-600 transition">
-              Add to Cart
-            </button> */}
+            <div className="space-y-1 text-sm sm:text-base">
+              <p className="text-gray-700">
+                <strong>Price:</strong> £{selected.price}
+              </p>
+              <p className="text-gray-700">
+                <strong>Flavour:</strong> {selected.flavor}
+              </p>
+              <p className="text-gray-700">
+                <strong>Strength:</strong> {selected.strength}
+              </p>
+              <p className="text-gray-700">
+                <strong>Size:</strong> {selected.size}
+              </p>
+            </div>
           </div>
         </div>
       )}

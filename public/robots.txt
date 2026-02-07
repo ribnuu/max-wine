@@ -1,0 +1,15 @@
+# Robots.txt for Mak Wines
+# https://www.makwines.co.uk
+
+User-agent: *
+Allow: /
+
+# Disallow admin pages
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://www.makwines.co.uk/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

@@ -1,0 +1,21 @@
+{
+  "name": "Mak Wines - Premium Wines, Spirits & Vapes",
+  "short_name": "Mak Wines",
+  "description": "Your premier off-licence in Abingdon, Oxfordshire for quality wines, spirits, beers, vapes and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#660033",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+}

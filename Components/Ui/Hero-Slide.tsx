@@ -1,66 +1,87 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { HeroSlide as HeroSlideType } from "@/lib/types/heroSlide";
+
+// Fallback slides in case database is empty
+const fallbackSlides = [
+  {
+    title: "Premium Wines",
+    subtitle: "Discover Exquisite Flavors",
+    description:
+      "Explore our curated selection of fine wines from world-renowned vineyards",
+    background_image: "/Images/wine-978688_1280.jpg",
+    is_discount: true,
+    discount_percentage: 20,
+  },
+  {
+    title: "Premium Spirits",
+    subtitle: "Crafted with Excellence",
+    description:
+      "Experience the finest whiskeys, vodkas, gins and more from top distilleries",
+    background_image: "/Images/alcoholic-beverages-1845295_1280.jpg",
+    is_discount: false,
+    discount_percentage: 0,
+  },
+  {
+    title: "Beers & Ciders",
+    subtitle: "Refreshing Selection",
+    description:
+      "From craft brews to classic favorites, find your perfect refreshment",
+    background_image: "/Images/bar-209148_1280.jpg",
+    is_discount: true,
+    discount_percentage: 15,
+  },
+  {
+    title: "Vapes & E-Liquids",
+    subtitle: "Premium Vaping Experience",
+    description:
+      "Discover our extensive range of quality vapes and delicious e-liquid flavours",
+    background_image: "/Images/AGRPDG2EBRLNHHXDJ2FYVIKXUM.jpg",
+    is_discount: true,
+    discount_percentage: 25,
+  },
+  {
+    title: "Ready Mixed Drinks",
+    subtitle: "Convenience Meets Quality",
+    description: "Pre-mixed cocktails and beverages perfect for any occasion",
+    background_image: "/Images/bar-4656332_1280.jpg",
+    is_discount: false,
+    discount_percentage: 0,
+  },
+  {
+    title: "Sweets & Snacks",
+    subtitle: "Delicious Treats Await",
+    description: "Indulge in our selection of confectionery and tasty snacks",
+    background_image: "/Images/colorful-1284475_1280.jpg",
+    is_discount: true,
+    discount_percentage: 10,
+  },
+];
 
 const HeroSlide = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [slides, setSlides] = useState<HeroSlideType[] | typeof fallbackSlides>(fallbackSlides);
+  const [loading, setLoading] = useState(true);
 
-  const templates = [
-    {
-      title: "Premium Wines",
-      subtitle: "Discover Exquisite Flavors",
-      description:
-        "Explore our curated selection of fine wines from world-renowned vineyards",
-      background_image: "/Images/wine-978688_1280.jpg",
-      is_discount: true,
-      discount_percentage: 20,
-    },
-    {
-      title: "Premium Spirits",
-      subtitle: "Crafted with Excellence",
-      description:
-        "Experience the finest whiskeys, vodkas, gins and more from top distilleries",
-      background_image: "/Images/alcoholic-beverages-1845295_1280.jpg",
-      is_discount: false,
-      discount_percentage: 0,
-    },
-    {
-      title: "Beers & Ciders",
-      subtitle: "Refreshing Selection",
-      description:
-        "From craft brews to classic favorites, find your perfect refreshment",
-      background_image: "/Images/bar-209148_1280.jpg",
-      is_discount: true,
-      discount_percentage: 15,
-    },
-    {
-      title: "Vapes & E-Liquids",
-      subtitle: "Premium Vaping Experience",
-      description:
-        "Discover our extensive range of quality vapes and delicious e-liquid flavors",
-      background_image: "/Images/AGRPDG2EBRLNHHXDJ2FYVIKXUM.jpg",
-      is_discount: true,
-      discount_percentage: 25,
-    },
-    {
-      title: "Ready Mixed Drinks",
-      subtitle: "Convenience Meets Quality",
-      description: "Pre-mixed cocktails and beverages perfect for any occasion",
-      background_image: "/Images/bar-4656332_1280.jpg",
-      is_discount: false,
-      discount_percentage: 0,
-    },
-    {
-      title: "Sweets & Snacks",
-      subtitle: "Delicious Treats Await",
-      description: "Indulge in our selection of confectionery and tasty snacks",
-      background_image: "/Images/colorful-1284475_1280.jpg",
-      is_discount: true,
-      discount_percentage: 10,
-    },
-  ];
+  // Fetch slides from database
+  useEffect(() => {
+    fetch("/api/hero-slides")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setSlides(data);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  const templates = slides;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -142,13 +163,6 @@ const HeroSlide = () => {
               <div className="relative h-full flex items-center">
                 <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <div className="max-w-2xl">
-                    {slide.is_discount && (
-                      <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-linear-to-r from-orange-500 to-red-500 rounded-full text-xs sm:text-sm font-bold shadow-lg backdrop-blur-sm border border-white/20 animate-pulse mb-4 sm:mb-6">
-                        <span className="w-2 h-2 bg-white rounded-full"></span>
-                        {slide.discount_percentage}% OFF
-                      </div>
-                    )}
-
                     <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-3 sm:mb-4 lg:mb-6 leading-tight text-white drop-shadow-2xl">
                       {slide.title}
                     </h1>
