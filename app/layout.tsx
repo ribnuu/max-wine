@@ -170,27 +170,38 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // ============================================================
+  // SITE PAUSED - Hosting fee not paid
+  // To restore the site, remove this block and uncomment {children} below
+  // ============================================================
   return (
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-icon.svg" />
-        <link rel="canonical" href="https://www.makwines.co.uk" />
-        {/* Google Search Console Verification - Replace YOUR_CODE with actual code from Search Console */}
-        <meta name="google-site-verification" content="87_3drd0GP9cBFOS55yJEtPO87A9ZuE6N1KwfSx4X4Q" />
-        <meta name="geo.region" content="GB-OXF" />
-        <meta name="geo.placename" content="Abingdon" />
-        <meta name="geo.position" content="51.6708;-1.2880" />
-        <meta name="ICBM" content="51.6708, -1.2880" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <meta name="robots" content="noindex, nofollow" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ margin: 0, padding: 0 }}
       >
-        {children}
+        {/* SITE PAUSED - uncomment {children} and remove this block to restore */}
+        {/* {children} */}
+        <div
+          style={{
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "#000",
+            color: "#fff",
+            fontFamily: "system-ui, -apple-system, sans-serif",
+          }}
+        >
+          <h1 style={{ fontSize: "2rem", fontWeight: 600 }}>
+            Site Temporarily Unavailable
+          </h1>
+        </div>
       </body>
     </html>
   );
