@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { heroSlideUpdateSchema } from "@/lib/validation/schemas";
 
 // GET single hero slide
 export async function GET(
@@ -33,11 +34,19 @@ export async function PUT(
 ) {
   const { id } = await params;
   const body = await request.json();
+  const parsed = heroSlideUpdateSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validation failed", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
 
   const supabaseAdmin = getSupabaseAdmin();
   const { data, error } = await supabaseAdmin
     .from("hero_slides")
-    .update({ ...body, updated_at: new Date().toISOString() })
+    .update({ ...parsed.data, updated_at: new Date().toISOString() })
     .eq("id", id)
     .select()
     .single();

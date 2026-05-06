@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import ProductTable from "@/Components/Admin/ProductTable";
 import { Product } from "@/lib/types/product";
-import { SiteSettings } from "@/lib/types/siteSettings";
 import { PlusCircle, Package, Loader2, Tag, Settings } from "lucide-react";
 
 export default function AdminDashboard() {
@@ -13,9 +12,7 @@ export default function AdminDashboard() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState(categoryFromUrl || "all");
-  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
-
+  const [filter, setFilter] = useState("all");
   useEffect(() => {
     // Fetch products
     fetch("/api/products?includeInactive=true")
@@ -27,20 +24,10 @@ export default function AdminDashboard() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-
-    // Fetch site settings
-    fetch("/api/site-settings")
-      .then((res) => res.json())
-      .then((data) => setSiteSettings(data))
-      .catch(() => {});
   }, []);
 
-  // Update filter when URL category changes
-  useEffect(() => {
-    if (categoryFromUrl) {
-      setFilter(categoryFromUrl);
-    }
-  }, [categoryFromUrl]);
+  // Keep derived filter in render to avoid setState in effects.
+  const activeFilter = categoryFromUrl || filter;
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
@@ -65,9 +52,9 @@ export default function AdminDashboard() {
   };
 
   const filteredProducts =
-    filter === "all"
+    activeFilter === "all"
       ? products
-      : products.filter((p) => p.category === filter);
+      : products.filter((p) => p.category === activeFilter);
 
   const categories = [...new Set(products.map((p) => p.category))];
 
@@ -77,22 +64,12 @@ export default function AdminDashboard() {
       <div className="mb-6 sm:mb-8">
         <h2 className="text-lg font-semibold text-gray-700 mb-3">Quick Actions</h2>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
-          {siteSettings?.add_product_enabled ? (
-            <Link
-              href="/admin/products/new"
-              className="bg-[#660033] text-white p-4 rounded-lg font-medium hover:bg-[#550028] transition-colors flex flex-col items-center justify-center gap-2 text-center"
-            >
-              <PlusCircle size={24} />
-              <span className="text-sm">Add Product</span>
-            </Link>
-          ) : (
-            <div
-              className="bg-gray-400 text-white p-4 rounded-lg font-medium cursor-not-allowed flex flex-col items-center justify-center gap-2 text-center opacity-60"
-            >
-              <PlusCircle size={24} />
-              <span className="text-sm">Add Product</span>
-            </div>
-          )}
+          <div
+            className="bg-gray-400 text-white p-4 rounded-lg font-medium cursor-not-allowed flex flex-col items-center justify-center gap-2 text-center opacity-60"
+          >
+            <PlusCircle size={24} />
+            <span className="text-sm">Add Product</span>
+          </div>
           <Link
             href="/admin/week-deals/new"
             className="bg-green-600 text-white p-4 rounded-lg font-medium hover:bg-green-700 transition-colors flex flex-col items-center justify-center gap-2 text-center"
@@ -132,22 +109,12 @@ export default function AdminDashboard() {
             {products.length} total products
           </p>
         </div>
-        {siteSettings?.add_product_enabled ? (
-          <Link
-            href="/admin/products/new"
-            className="bg-[#660033] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium hover:bg-[#550028] transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
-          >
-            <PlusCircle size={18} />
-            Add Product
-          </Link>
-        ) : (
-          <div
-            className="bg-gray-400 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base opacity-60"
-          >
-            <PlusCircle size={18} />
-            Add Product
-          </div>
-        )}
+        <div
+          className="bg-gray-400 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base opacity-60"
+        >
+          <PlusCircle size={18} />
+          Add Product
+        </div>
       </div>
 
       {/* Stats Cards - 2 columns on mobile, 4 on desktop */}

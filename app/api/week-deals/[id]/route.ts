@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { weekDealUpdateSchema } from "@/lib/validation/schemas";
 
 // GET single week deal
 export async function GET(
@@ -33,11 +34,19 @@ export async function PUT(
 ) {
   const { id } = await params;
   const body = await request.json();
+  const parsed = weekDealUpdateSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validation failed", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
 
   const supabaseAdmin = getSupabaseAdmin();
   const { data, error } = await supabaseAdmin
     .from("week_deals")
-    .update({ ...body, updated_at: new Date().toISOString() })
+    .update({ ...parsed.data, updated_at: new Date().toISOString() })
     .eq("id", id)
     .select()
     .single();

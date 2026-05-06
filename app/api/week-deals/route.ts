@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { weekDealSchema } from "@/lib/validation/schemas";
 
 // GET all week deals
 export async function GET(request: NextRequest) {
@@ -25,11 +26,19 @@ export async function GET(request: NextRequest) {
 // POST new week deal
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  const parsed = weekDealSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validation failed", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
 
   const supabaseAdmin = getSupabaseAdmin();
   const { data, error } = await supabaseAdmin
     .from("week_deals")
-    .insert([body])
+    .insert([parsed.data])
     .select()
     .single();
 

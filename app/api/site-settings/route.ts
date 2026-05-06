@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import bcrypt from "bcryptjs";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -29,7 +30,9 @@ export async function GET() {
       });
     }
 
-    return NextResponse.json(data);
+    const safeSettings = { ...(data as Record<string, unknown>) };
+    delete safeSettings.admin_password;
+    return NextResponse.json(safeSettings);
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch settings" },
@@ -48,7 +51,6 @@ export async function POST(request: NextRequest) {
       .select("id")
       .single();
 
-    // Build update object - only include admin_password if provided
     const updateData: Record<string, unknown> = {
       email: body.email,
       phone: body.phone,
@@ -59,9 +61,15 @@ export async function POST(request: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    // Only update password if a new one is provided
-    if (body.admin_password && body.admin_password.trim() !== "") {
-      updateData.admin_password = body.admin_password;
+    const passwordToHash =
+      typeof body.newPassword === "string" && body.newPassword.trim() !== ""
+        ? body.newPassword
+        : typeof body.admin_password === "string" && body.admin_password.trim() !== ""
+        ? body.admin_password
+        : "";
+
+    if (passwordToHash) {
+      updateData.admin_password = await bcrypt.hash(passwordToHash, 12);
     }
 
     let result;

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Product } from "@/lib/types/product";
 import { WeekDeal } from "@/lib/types/weekDeal";
+import { useRouter } from "next/navigation";
 import {
   Menu,
   X,
@@ -15,6 +16,20 @@ import {
 import ELiquidProductsPage from "@/Components/Ui/E-LiquidProductspage";
 import HeroSlide from "@/Components/Ui/Hero-Slide";
 import Image from "next/image";
+
+type CatalogProduct = {
+  id: string;
+  name: string;
+  category: string;
+  image?: string;
+  images?: string[];
+  price?: number;
+  compare_at_price?: number;
+  offer_quantity?: number;
+  offer_price?: number;
+  description?: string;
+  show_price?: boolean;
+};
 
 // Mock Data
 const deals = [
@@ -106,7 +121,7 @@ const Navigation = ({
   setCurrentPage,
   searchQuery,
   setSearchQuery,
-  onSearch
+  onSearch,
 }: {
   setCurrentPage: (page: string) => void;
   searchQuery: string;
@@ -116,12 +131,7 @@ const Navigation = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
 
-  type NavItem = {
-    name: string;
-    page: string;
-  };
-
-  const navItems: NavItem[] = [
+  const navItems = [
     { name: "Home", page: "home" },
     { name: "Offers", page: "offers" },
     { name: "Week Deals", page: "Week-deals" },
@@ -135,36 +145,35 @@ const Navigation = ({
     window.scrollTo(0, 0);
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      onSearch();
-      setShowMobileSearch(false);
-      setMobileMenuOpen(false);
+  const handleSearchSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!searchQuery.trim()) {
+      return;
     }
+
+    onSearch();
+    setShowMobileSearch(false);
+    setMobileMenuOpen(false);
   };
 
   return (
-    <nav className="bg-[#660033] text-white sticky top-0 z-50 shadow-lg">
-      {/* Main Navigation */}
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-center h-16 sm:h-20">
-          {/* Logo */}
-          <div
-            className="text-2xl sm:text-4xl md:text-5xl text-white cursor-pointer whitespace-nowrap flex items-baseline gap-1"
+    <nav className="bg-[#660033] text-white shadow-lg sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-4 py-3">
+        <div className="flex items-center justify-between gap-4">
+          <button
             onClick={() => handleNavClick("home")}
+            className="font-bold text-lg sm:text-xl tracking-wide"
           >
-            Mak <span className="font-bold">Wines</span>
-            <span className="text-xl sm:text-2xl text-pink-200 font-light italic ml-1">(Abingdon)</span>
-          </div>
+            Mak Wines
+          </button>
 
-          {/* Desktop Search Bar */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center flex-1 max-w-md mx-4 lg:mx-8">
-            <div className="relative w-full">
+          <form onSubmit={handleSearchSubmit} className="hidden md:block flex-1 max-w-xl">
+            <div className="relative">
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="Search products..."
                 className="w-full px-4 py-2 pl-10 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:bg-white/20 focus:border-white/50 text-sm"
               />
@@ -173,6 +182,7 @@ const Navigation = ({
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
+                  title="Clear search"
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white"
                 >
                   <X className="w-4 h-4" />
@@ -181,45 +191,39 @@ const Navigation = ({
             </div>
           </form>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-4 lg:gap-6">
             {navItems.map((item) => (
-              <div key={item.name} className="relative group">
-                <button
-                  onClick={() => handleNavClick(item.page)}
-                  className="flex items-center gap-1 hover:text-red-200 transition py-2 text-sm lg:text-base"
-                >
-                  {item.name}
-                </button>
-              </div>
+              <button
+                key={item.name}
+                onClick={() => handleNavClick(item.page)}
+                className="flex items-center gap-1 hover:text-red-200 transition py-2 text-sm lg:text-base"
+              >
+                {item.name}
+              </button>
             ))}
           </div>
 
-          {/* Mobile Search & Menu Toggle */}
           <div className="md:hidden flex items-center gap-2">
             <button
-              onClick={() => setShowMobileSearch(!showMobileSearch)}
+              onClick={() => setShowMobileSearch((value) => !value)}
               aria-label="Search"
+              title="Search"
               className="p-2"
             >
               <Search className="w-6 h-6" />
             </button>
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setMobileMenuOpen((value) => !value)}
               aria-label="Toggle menu"
+              title="Toggle menu"
               className="p-2"
             >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Search Bar */}
       {showMobileSearch && (
         <div className="md:hidden px-4 pb-4 border-t border-red-800">
           <form onSubmit={handleSearchSubmit} className="mt-3">
@@ -227,7 +231,7 @@ const Navigation = ({
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="Search products..."
                 className="w-full px-4 py-3 pl-10 rounded-full bg-white/10 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:bg-white/20 text-sm"
                 autoFocus
@@ -246,7 +250,6 @@ const Navigation = ({
         </div>
       )}
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden pb-4 px-4 border-t border-red-800">
           {navItems.map((item) => (
@@ -414,44 +417,41 @@ const Footer = ({ setCurrentPage, siteSettings }: { setCurrentPage: (page: strin
 };
 
 // Sample Product Data
-const productsByCategory: Record<
-  string,
-  { id: number; name: string; image: string; category: string }[]
-> = {
+const productsByCategory: Record<string, CatalogProduct[]> = {
   Spirits: [
     {
-      id: 1,
+      id: "1",
       name: "Premium Vodka",
       image: "/Images/Spirits/Gordon's dry gin pink edition.png",
       category: "Spirits",
     },
     {
-      id: 2,
+      id: "2",
       name: "Scottish Whisky",
       image: "/Images/Spirits/Smirnoff Red label.jpeg",
       category: "Spirits",
     },
     {
-      id: 3,
+      id: "3",
       name: "London Dry Gin",
       image: "/Images/Spirits/Captain morgan Original special gold.jpeg",
       category: "Spirits",
     },
     {
-      id: 4,
+      id: "4",
       name: "Dark Rum",
       image: "/Images/Spirits/Buffalo trace bourbon.jpeg",
       category: "Spirits",
     },
     {
-      id: 5,
+      id: "5",
       name: "Blended Whisky",
       image:
         "/Images/Spirits/Appleton estate 21 years old nassau valley casks.jpeg",
       category: "Spirits",
     },
     {
-      id: 6,
+      id: "6",
       name: "Premium Tequila",
       image: "/Images/Spirits/Chivas legal.jpg",
       category: "Spirits",
@@ -459,67 +459,67 @@ const productsByCategory: Record<
   ],
   Wines: [
     {
-      id: 7,
+      id: "7",
       name: "Red Wine Cabernet",
       image: "/Images/Wines/Canti Prosecco.jpeg",
       category: "Wines",
     },
     {
-      id: 8,
+      id: "8",
       name: "White Wine Chardonnay",
       image: "/Images/Wines/Chardonnay Rich and smooth.jpeg",
       category: "Wines",
     },
     {
-      id: 9,
+      id: "9",
       name: "Rosé Wine",
       image: "/Images/Wines/High tide.png",
       category: "Wines",
     },
     {
-      id: 10,
+      id: "10",
       name: "Sparkling Wine",
       image: "/Images/Wines/Isla Negra.png",
       category: "Wines",
     },
     {
-      id: 11,
+      id: "11",
       name: "Merlot Red Wine",
       image: "/Images/Wines/Pinot Grigio.jpeg",
       category: "Wines",
     },
     {
-      id: 12,
+      id: "12",
       name: "Pinot Grigio",
       image: "/Images/Wines/Prosecco.jpeg",
       category: "Wines",
     },
     {
-      id: 13,
+      id: "13",
       name: "Sparkling Wine",
       image: "/Images/Wines/Sauvignon Blanc Oyster bay.jpeg",
       category: "Wines",
     },
     {
-      id: 14,
+      id: "14",
       name: "Merlot Red Wine",
       image: "/Images/Wines/Chardonnay.jpeg",
       category: "Wines",
     },
     {
-      id: 15,
+      id: "15",
       name: "Pinot Grigio",
       image: "/Images/Wines/Villa Maria.jpeg",
       category: "Wines",
     },
     {
-      id: 16,
+      id: "16",
       name: "Sparkling Wine",
       image: "/Images/Wines/Sauvignon Blanc.jpeg",
       category: "Wines",
     },
     {
-      id: 17,
+      id: "17",
       name: "Merlot Red Wine",
       image: "/Images/Wines/Jacob's Creek.jpg",
       category: "Wines",
@@ -534,38 +534,38 @@ const productsByCategory: Record<
   ],
   "Beers & Ciders": [
     {
-      id: 13,
+      id: "13-b",
       name: "Premium Lager",
       image:
         "/Images/Beers & Cider's/pexels-paul-espinoza-841364529-30271798.jpg",
       category: "Beers & Ciders",
     },
     {
-      id: 14,
+      id: "14-b",
       name: "Craft IPA",
       image: "/Images/Beers & Cider's/pexels-introspectivedsgn-9646267.jpg",
       category: "Beers & Ciders",
     },
     {
-      id: 15,
+      id: "15-b",
       name: "Apple Cider",
       image: "/Images/Beers & Cider's/pexels-thatguycraig000-1634074.jpg",
       category: "Beers & Ciders",
     },
     {
-      id: 16,
+      id: "16-b",
       name: "Dark Ale",
       image: "/Images/Beers & Cider's/pexels-brettjordan-25311376.jpg",
       category: "Beers & Ciders",
     },
     {
-      id: 17,
+      id: "17-b",
       name: "Wheat Beer",
       image: "/Images/Beers & Cider's/pexels-ron-martinez-2313692-4044674.jpg",
       category: "Beers & Ciders",
     },
     {
-      id: 18,
+      id: "18",
       name: "Pear Cider",
       image:
         "/Images/Beers & Cider's/pexels-christina-petsos-200616875-11568810.jpg",
@@ -574,41 +574,41 @@ const productsByCategory: Record<
   ],
   "Ready Mixed Drinks": [
     {
-      id: 19,
+      id: "19",
       name: "Mojito Mix",
       image:
         "/Images/Ready mixed drinks/pexels-8pcarlos-morocho-2150734957-35174177.jpg",
       category: "Ready Mixed Drinks",
     },
     {
-      id: 20,
+      id: "20",
       name: "Margarita Mix",
       image:
         "/Images/Ready mixed drinks/pexels-ajit-shahu-1794732582-28321215.jpg",
       category: "Ready Mixed Drinks",
     },
     {
-      id: 21,
+      id: "21",
       name: "Cosmopolitan Mix",
       image:
         "/Images/Ready mixed drinks/pexels-alle-alonso-3429039-5116860.jpg",
       category: "Ready Mixed Drinks",
     },
     {
-      id: 22,
+      id: "22",
       name: "Long Island Mix",
       image: "/Images/Ready mixed drinks/pexels-bilakis-12360658.jpg",
       category: "Ready Mixed Drinks",
     },
     {
-      id: 23,
+      id: "23",
       name: "Pina Colada Mix",
       image:
         "/Images/Ready mixed drinks/pexels-christopher-welsch-leveroni-2150186467-31562022.jpg",
       category: "Ready Mixed Drinks",
     },
     {
-      id: 24,
+      id: "24",
       name: "Daiquiri Mix",
       image:
         "/Images/Ready mixed drinks/pexels-collab-media-173741945-27626300.jpg",
@@ -617,37 +617,37 @@ const productsByCategory: Record<
   ],
   Sweets: [
     {
-      id: 25,
+      id: "25",
       name: "Chocolate Bars",
       image: "/Images/Sweets/pexels-pixabay-33239.jpg",
       category: "Sweets",
     },
     {
-      id: 26,
+      id: "26",
       name: "Gummy Bears",
       image: "/Images/Sweets/pexels-anna-belousova-130658517-10325488.jpg",
       category: "Sweets",
     },
     {
-      id: 27,
+      id: "27",
       name: "Hard Candys",
       image: "/Images/Sweets/pexels-nietjuhart-30399678.jpg",
       category: "Sweets",
     },
     {
-      id: 28,
+      id: "28",
       name: "Lollipops",
       image: "/Images/Sweets/pexels-wwarby-19599854.jpg",
       category: "Sweets",
     },
     {
-      id: 29,
+      id: "29",
       name: "Chocolate Truffles",
       image: "/Images/Sweets/pexels-planka-28892456.jpg",
       category: "Sweets",
     },
     {
-      id: 30,
+      id: "30",
       name: "Fruit Jellies",
       image: "/Images/Sweets/pexels-daniblaj95-6007945.jpg",
       category: "Sweets",
@@ -655,37 +655,37 @@ const productsByCategory: Record<
   ],
   "Vapes & E-Liquids": [
     {
-      id: 31,
+      id: "31",
       name: "Elf Bar Raya D2",
       image: "/Images/Vapes & E-Liquids/Elf-bar-raya-d2.webp",
       category: "Vapes & E-Liquids",
     },
     {
-      id: 32,
+      id: "32",
       name: "Fruit Bomb 130ml 30mg",
       image: "/Images/Vapes & E-Liquids/fruit-bomb2-130ml-30mg.webp",
       category: "Vapes & E-Liquids",
     },
     {
-      id: 33,
+      id: "33",
       name: "Caliburn G2 Carbon Black",
       image: "/Images/Vapes & E-Liquids/Caliburn-g2-carbon-black.jpg",
       category: "Vapes & E-Liquids",
     },
     {
-      id: 34,
+      id: "34",
       name: "Tokyo Iced Peach 30ml",
       image: "/Images/Vapes & E-Liquids/Tokyo-Iced-Peach-30ml.webp",
       category: "Vapes & E-Liquids",
     },
     {
-      id: 35,
+      id: "35",
       name: "Cherry Cola",
       image: "/Images/Vapes & E-Liquids/Cherry Cola.webp",
       category: "Vapes & E-Liquids",
     },
     {
-      id: 36,
+      id: "36",
       name: "Blueberry Raspberry",
       image: "/Images/Vapes & E-Liquids/Canada-blueberry-raspberry.webp",
       category: "Vapes & E-Liquids",
@@ -695,12 +695,19 @@ const productsByCategory: Record<
 
 // Home Page Component - No product limit
 
-const HomePage = ({ setCurrentPage, onDealClick }: { setCurrentPage: (page: string) => void; onDealClick?: (deal: WeekDeal) => void }) => {
+const HomePage = ({
+  setCurrentPage,
+  onDealClick,
+  onProductClick,
+}: {
+  setCurrentPage: (page: string) => void;
+  onDealClick?: (deal: WeekDeal) => void;
+  onProductClick: (product: CatalogProduct) => void;
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [dynamicProducts, setDynamicProducts] = useState<Record<string, Product[]>>({});
   const [, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [weekDeals, setWeekDeals] = useState<WeekDeal[]>([]);
 
   // Fetch products from Supabase
@@ -734,11 +741,12 @@ const HomePage = ({ setCurrentPage, onDealClick }: { setCurrentPage: (page: stri
       .catch(() => {});
   }, []);
 
-  // Use dynamic products if available, otherwise fallback to hardcoded
-  const productsToShow = Object.keys(dynamicProducts).length > 0 ? dynamicProducts : productsByCategory;
+  const productsToShow: Record<string, CatalogProduct[]> = Object.keys(dynamicProducts).length > 0
+    ? (dynamicProducts as Record<string, CatalogProduct[]>)
+    : productsByCategory;
 
   // Get current category products - show all without limit
-  const currentCategoryProducts = selectedCategory ? (productsToShow[selectedCategory] || []) : [];
+  const currentCategoryProducts: CatalogProduct[] = selectedCategory ? (productsToShow[selectedCategory] || []) : [];
 
   const handleCategoryClick = (categoryName: string) => {
     setIsAnimating(true);
@@ -760,29 +768,6 @@ const HomePage = ({ setCurrentPage, onDealClick }: { setCurrentPage: (page: stri
     <div>
       {/* Hero Section */}
       <HeroSlide />
-      {/* <div
-        className="relative text-white py-72 image-full bg-cover bg-center mb-12"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1200')",
-          backgroundBlendMode: "overlay",
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="max-w-2xl">
-            <h1 className="text-5xl font-bold mb-4">Welcome to Mak Wines</h1>
-            <p className="text-xl mb-6">
-              Discover unbeatable deals on premium spirits, wines, and more
-            </p>
-            <button
-              onClick={() => setCurrentPage("offers")}
-              className="bg-white text-red-700 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg transition"
-            >
-              View Latest Offers
-            </button>
-          </div>
-        </div>
-      </div> */}
 
       {/* Categories Section */}
       <div className="bg-gray-50 py-8 sm:py-12">
@@ -795,15 +780,11 @@ const HomePage = ({ setCurrentPage, onDealClick }: { setCurrentPage: (page: stri
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
             {!selectedCategory ? (
               // Display Category Cards
-              categories.map((category, index) => (
+              categories.map((category) => (
                 <button
                   key={category.name}
                   onClick={() => handleCategoryClick(category.name)}
-                  className="hover:shadow-2xl transition-all transform hover:-translate-y-1 overflow-hidden cursor-pointer flex flex-col rounded-xl sm:rounded-2xl"
-                  style={{
-                    transform: isAnimating ? "scale(0.7)" : "scale(1)",
-                    transition: "transform 0.4s ease-in-out",
-                  }}
+                  className={`hover:shadow-2xl transition-all transform hover:-translate-y-1 overflow-hidden cursor-pointer flex flex-col rounded-xl sm:rounded-2xl ${isAnimating ? "scale-[0.7]" : "scale-100"}`}
                 >
                   {/* IMAGE AREA WITH TEXT ON TOP */}
                   <div className="relative h-32 sm:h-40 md:h-48 w-full">
@@ -829,30 +810,22 @@ const HomePage = ({ setCurrentPage, onDealClick }: { setCurrentPage: (page: stri
                 {/* Go Back Card */}
                 <button
                   onClick={handleGoBack}
-                  className="bg-[#660033] text-white rounded-xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1 flex flex-col items-center justify-center gap-2 sm:gap-3 min-h-[180px] sm:min-h-[220px] md:min-h-[280px] hover:bg-[#550028]"
-                  style={{
-                    transform: isAnimating ? "scale(0.7)" : "scale(1)",
-                    transition: "transform 0.4s ease-in-out",
-                  }}
+                  className={`bg-[#660033] text-white rounded-xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1 flex flex-col items-center justify-center gap-2 sm:gap-3 min-h-[180px] sm:min-h-[220px] md:min-h-[280px] hover:bg-[#550028] ${isAnimating ? "scale-[0.7]" : "scale-100"}`}
                 >
                   <ArrowLeft className="w-6 h-6 sm:w-8 sm:h-8" />
                   <span className="text-sm sm:text-lg font-semibold">Go Back</span>
                 </button>
 
                 {/* Product Cards - All Products */}
-                {currentCategoryProducts.map((product: any, index: number) => (
+                {currentCategoryProducts.map((product) => (
                   <div
                     key={product.id}
-                    onClick={() => setSelectedProduct(product)}
-                    className="bg-[#660033] rounded-xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1 overflow-hidden cursor-pointer"
-                    style={{
-                      transform: isAnimating ? "scale(0.7)" : "scale(1)",
-                      transition: "transform 0.4s ease-in-out",
-                    }}
+                    onClick={() => onProductClick(product)}
+                    className={`bg-[#660033] rounded-xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1 overflow-hidden cursor-pointer ${isAnimating ? "scale-[0.7]" : "scale-100"}`}
                   >
                     <div className="relative h-32 sm:h-40 md:h-48 w-full bg-white flex items-center justify-center p-2">
                       <img
-                        src={product.images?.[0] || product.image}
+                        src={product.images?.[0] || product.image || "/Images/categories/Sweets.jpeg"}
                         alt={product.name}
                         className="max-w-full max-h-full object-contain"
                       />
@@ -870,7 +843,7 @@ const HomePage = ({ setCurrentPage, onDealClick }: { setCurrentPage: (page: stri
                           <p className="text-xs sm:text-sm mt-1 flex items-center justify-center gap-1 flex-wrap">
                             <span className="text-white font-bold">£{product.price}</span>
                             {product.compare_at_price && product.compare_at_price > product.price && (
-                              <span className="text-white font-bold" style={{ textDecoration: 'line-through', textDecorationColor: 'red', textDecorationThickness: '1.5px' }}>£{product.compare_at_price}</span>
+                              <span className="text-white font-bold line-through decoration-red-500 decoration-2">£{product.compare_at_price}</span>
                             )}
                           </p>
                         ) : null
@@ -891,8 +864,8 @@ const HomePage = ({ setCurrentPage, onDealClick }: { setCurrentPage: (page: stri
           Week Deals
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 text-white">
-          {(weekDeals.length > 0 ? weekDeals : deals).map((deal: any) => {
-            const isClickable = deal.is_clickable !== false;
+          {(weekDeals.length > 0 ? weekDeals : deals).map((deal) => {
+            const isClickable = !("is_clickable" in deal) || deal.is_clickable !== false;
             return (
               <div
                 key={deal.id}
@@ -921,108 +894,6 @@ const HomePage = ({ setCurrentPage, onDealClick }: { setCurrentPage: (page: stri
         </div>
       </div>
 
-      {/* Product Detail Modal */}
-      {selectedProduct && (
-        <div
-          className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50"
-          onClick={() => setSelectedProduct(null)}
-        >
-          <div
-            className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedProduct(null)}
-              className="absolute top-3 right-3 bg-gray-100 rounded-full p-2 hover:bg-gray-200 transition z-10"
-            >
-              <X className="w-5 h-5 text-gray-600" />
-            </button>
-
-            {/* Product Image */}
-            <div className="relative bg-white p-6 flex items-center justify-center h-64 sm:h-80">
-              <img
-                src={selectedProduct.images?.[0] || selectedProduct.image}
-                alt={selectedProduct.name}
-                className="max-w-full max-h-full object-contain"
-              />
-            </div>
-
-            {/* Product Details */}
-            <div className="p-6 bg-[#660033] text-white rounded-b-2xl">
-              <h2 className="text-xl sm:text-2xl font-bold mb-2">
-                {selectedProduct.name}
-              </h2>
-
-              {/* Price */}
-              {selectedProduct.show_price !== false && (
-                selectedProduct.offer_quantity && selectedProduct.offer_price ? (
-                  <p className="text-2xl sm:text-3xl font-bold text-pink-200 mb-4">
-                    {selectedProduct.offer_quantity} for £{typeof selectedProduct.offer_price === 'number' ? selectedProduct.offer_price.toFixed(2) : selectedProduct.offer_price}
-                  </p>
-                ) : selectedProduct.price ? (
-                  <div className="flex items-center gap-3 mb-4">
-                    <p className="text-2xl sm:text-3xl font-bold text-white">
-                      £{typeof selectedProduct.price === 'number' ? selectedProduct.price.toFixed(2) : selectedProduct.price}
-                    </p>
-                    {selectedProduct.compare_at_price && selectedProduct.compare_at_price > selectedProduct.price && (
-                      <p className="text-2xl sm:text-3xl text-white font-bold" style={{ textDecoration: 'line-through', textDecorationColor: 'red', textDecorationThickness: '2px' }}>
-                        £{typeof selectedProduct.compare_at_price === 'number' ? selectedProduct.compare_at_price.toFixed(2) : selectedProduct.compare_at_price}
-                      </p>
-                    )}
-                  </div>
-                ) : null
-              )}
-
-              {/* Description */}
-              {selectedProduct.description && (
-                <div className="mb-4">
-                  <h3 className="font-semibold text-pink-200 mb-1">Description</h3>
-                  <p className="text-white/90 text-sm sm:text-base">
-                    {selectedProduct.description}
-                  </p>
-                </div>
-              )}
-
-              {/* Additional Details */}
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                {selectedProduct.category && (
-                  <div>
-                    <span className="text-pink-200">Category:</span>
-                    <p className="font-medium">{selectedProduct.category}</p>
-                  </div>
-                )}
-                {selectedProduct.size && (
-                  <div>
-                    <span className="text-pink-200">Size:</span>
-                    <p className="font-medium">{selectedProduct.size}</p>
-                  </div>
-                )}
-                {selectedProduct.strength && (
-                  <div>
-                    <span className="text-pink-200">Strength:</span>
-                    <p className="font-medium">{selectedProduct.strength}</p>
-                  </div>
-                )}
-                {selectedProduct.flavor && (
-                  <div>
-                    <span className="text-pink-200">Flavour:</span>
-                    <p className="font-medium">{selectedProduct.flavor}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedProduct(null)}
-                className="mt-6 w-full bg-white text-[#660033] py-3 rounded-full font-semibold hover:bg-gray-100 transition"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
@@ -1100,7 +971,7 @@ const OffersPage = ({ onProductClick }: { onProductClick: (product: Product) => 
                     <p className="text-xs sm:text-sm mt-1 flex items-center justify-center gap-1 flex-wrap">
                       <span className="text-orange-300 font-bold">£{product.price}</span>
                       {product.compare_at_price && product.compare_at_price > product.price && (
-                        <span className="text-white font-bold" style={{ textDecoration: 'line-through', textDecorationColor: 'red', textDecorationThickness: '1.5px' }}>£{product.compare_at_price}</span>
+                        <span className="text-white font-bold line-through decoration-red-500 decoration-2">£{product.compare_at_price}</span>
                       )}
                     </p>
                   ) : null
@@ -1219,7 +1090,7 @@ const LatestDealsPage = ({ onDealClick }: { onDealClick?: (deal: WeekDeal) => vo
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-2">Visit In-Store</h3>
                   <p className="text-gray-600 text-sm">
-                    Come visit us to grab these amazing deals before they're gone!
+                    Come visit us to grab these amazing deals before they&apos;re gone!
                   </p>
                 </div>
               </div>
@@ -1526,53 +1397,21 @@ const SearchResultsPage = ({
   allProducts: Product[];
   onProductClick: (product: Product) => void;
 }) => {
-  const query = searchQuery.toLowerCase().trim();
-  const searchTerms = query.split(/\s+/).filter(term => term.length > 0);
+  const normalize = (text: string | null | undefined) => (text || "").toLowerCase().trim();
+  const q = normalize(searchQuery);
 
-  // Calculate relevance score for each product
-  const getSearchScore = (product: Product): number => {
-    let score = 0;
-    const name = product.name.toLowerCase();
-    const category = product.category.toLowerCase();
-    const description = (product.description || "").toLowerCase();
-    const flavor = (product.flavor || "").toLowerCase();
-    const size = (product.size || "").toLowerCase();
-    const strength = (product.strength || "").toLowerCase();
-
-    for (const term of searchTerms) {
-      // Exact name match (highest priority)
-      if (name === term) score += 100;
-      // Name starts with term
-      else if (name.startsWith(term)) score += 50;
-      // Name contains term
-      else if (name.includes(term)) score += 30;
-
-      // Category match
-      if (category.includes(term)) score += 20;
-
-      // Other fields
-      if (flavor.includes(term)) score += 15;
-      if (description.includes(term)) score += 10;
-      if (size.includes(term)) score += 5;
-      if (strength.includes(term)) score += 5;
-
-      // Fuzzy matching - check for partial matches (at least 3 chars)
-      if (term.length >= 3) {
-        const words = name.split(/\s+/);
-        for (const word of words) {
-          if (word.startsWith(term.slice(0, 3))) score += 5;
-        }
-      }
-    }
-    return score;
-  };
-
-  // Filter and sort products by relevance
-  const searchResults = allProducts
-    .map(product => ({ product, score: getSearchScore(product) }))
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .map(item => item.product);
+  const searchResults = q
+    ? allProducts.filter((product) => {
+        return (
+          normalize(product.name).includes(q) ||
+          normalize(product.category).includes(q) ||
+          normalize(product.description).includes(q) ||
+          normalize(product.flavor).includes(q) ||
+          normalize(product.size).includes(q) ||
+          normalize(product.strength).includes(q)
+        );
+      })
+    : [];
 
   // Get suggested categories from results
   const suggestedCategories = [...new Set(searchResults.slice(0, 10).map(p => p.category))];
@@ -1641,7 +1480,7 @@ const SearchResultsPage = ({
                     <p className="text-xs sm:text-sm mt-1 flex items-center justify-center gap-1 flex-wrap">
                       <span className="text-white font-bold">£{product.price}</span>
                       {product.compare_at_price && product.compare_at_price > product.price && (
-                        <span className="text-white font-bold" style={{ textDecoration: 'line-through', textDecorationColor: 'red', textDecorationThickness: '1.5px' }}>£{product.compare_at_price}</span>
+                        <span className="text-white font-bold line-through decoration-red-500 decoration-2">£{product.compare_at_price}</span>
                       )}
                     </p>
                   ) : null
@@ -1736,7 +1575,7 @@ const WeekDealDetailPage = ({
                       <p className="text-xs sm:text-sm mt-1 flex items-center justify-center gap-1 flex-wrap">
                         <span className="text-white font-bold">£{product.price}</span>
                         {product.compare_at_price && product.compare_at_price > product.price && (
-                          <span className="text-white font-bold" style={{ textDecoration: 'line-through', textDecorationColor: 'red', textDecorationThickness: '1.5px' }}>£{product.compare_at_price}</span>
+                          <span className="text-white font-bold line-through decoration-red-500 decoration-2">£{product.compare_at_price}</span>
                         )}
                       </p>
                     ) : null
@@ -1753,10 +1592,10 @@ const WeekDealDetailPage = ({
 
 // Main App Component
 const MakWinesApp = () => {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState("home");
   const [searchQuery, setSearchQuery] = useState("");
   const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedDeal, setSelectedDeal] = useState<WeekDeal | null>(null);
   const [allWeekDeals, setAllWeekDeals] = useState<WeekDeal[]>([]);
   const [siteSettings, setSiteSettings] = useState({
@@ -1797,19 +1636,107 @@ const MakWinesApp = () => {
       .catch(() => {});
   }, []);
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      setCurrentPage("search");
-      window.scrollTo(0, 0);
+  useEffect(() => {
+    const updatePageState = (nextPage: string, nextQuery?: string) => {
+      window.requestAnimationFrame(() => {
+        if (typeof nextQuery === "string") {
+          setSearchQuery(nextQuery);
+        }
+        setCurrentPage(nextPage);
+      });
+    };
+
+    const syncFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const page = params.get("page");
+      const query = params.get("q") || "";
+      const normalizedPage = page === "week-deals" ? "Week-deals" : page;
+
+      if (!normalizedPage) {
+        updatePageState("home");
+        return;
+      }
+
+      if (normalizedPage === "search") {
+        updatePageState("search", query);
+        return;
+      }
+
+      const allowedPages = new Set([
+        "home",
+        "offers",
+        "Week-deals",
+        "category",
+        "products",
+        "about",
+        "contact",
+        "privacy",
+        "terms",
+        "cookies",
+        "eliquid",
+      ]);
+
+      if (allowedPages.has(normalizedPage)) {
+        updatePageState(normalizedPage);
+      }
+    };
+
+    const originalPushState = window.history.pushState.bind(window.history);
+    const originalReplaceState = window.history.replaceState.bind(window.history);
+
+    const emitLocationChange = () => {
+      window.dispatchEvent(new Event("locationchange"));
+    };
+
+    window.history.pushState = ((...args: Parameters<History["pushState"]>) => {
+      originalPushState(...args);
+      emitLocationChange();
+    }) as History["pushState"];
+
+    window.history.replaceState = ((...args: Parameters<History["replaceState"]>) => {
+      originalReplaceState(...args);
+      emitLocationChange();
+    }) as History["replaceState"];
+
+    syncFromUrl();
+    window.addEventListener("locationchange", syncFromUrl);
+    window.addEventListener("popstate", emitLocationChange);
+
+    return () => {
+      window.history.pushState = originalPushState;
+      window.history.replaceState = originalReplaceState;
+      window.removeEventListener("locationchange", syncFromUrl);
+      window.removeEventListener("popstate", emitLocationChange);
+    };
+  }, []);
+
+  const handleProductClick = (product: Product | CatalogProduct | unknown) => {
+    console.log("[App] Product clicked:", product);
+    
+    if (!product || typeof product !== "object" || !("id" in product)) {
+      console.warn("[App] Invalid product (missing or malformed):", product);
+      return;
     }
+
+    const productId = (product as Product | CatalogProduct).id;
+    if (typeof productId !== "string" && typeof productId !== "number") {
+      console.warn("[App] Invalid product ID (not string or number):", productId);
+      return;
+    }
+
+    console.log("[App] Navigating to product:", productId);
+    router.push(`/products/${encodeURIComponent(String(productId))}`);
   };
 
-  const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-  };
+  const handleDealClick = (deal: WeekDeal | unknown) => {
+    if (!deal || typeof deal !== "object" || !("id" in deal)) {
+      console.warn("[App] Invalid deal (missing or malformed):", deal);
+      return;
+    }
 
-  const handleDealClick = (deal: WeekDeal) => {
-    setSelectedDeal(deal);
+    console.log("[App] Deal clicked:", deal);
+    const typedDeal = deal as WeekDeal;
+    setSelectedDeal(typedDeal);
     setCurrentPage("week-deal-detail");
     window.scrollTo(0, 0);
   };
@@ -1817,7 +1744,7 @@ const MakWinesApp = () => {
   const renderPage = () => {
     switch (currentPage) {
       case "home":
-        return <HomePage setCurrentPage={setCurrentPage} onDealClick={handleDealClick} />;
+        return <HomePage setCurrentPage={setCurrentPage} onDealClick={handleDealClick} onProductClick={handleProductClick} />;
       case "offers":
         return <OffersPage onProductClick={handleProductClick} />;
       case "Week-deals":
@@ -1836,7 +1763,7 @@ const MakWinesApp = () => {
       case "eliquid":
         return <ELiquidPage />;
       case "category":
-        return <HomePage setCurrentPage={setCurrentPage} />;
+        return <HomePage setCurrentPage={setCurrentPage} onProductClick={handleProductClick} />;
       case "products":
         return <ProductsPage />;
       case "about":
@@ -1858,112 +1785,17 @@ const MakWinesApp = () => {
           />
         );
       default:
-        return <HomePage setCurrentPage={setCurrentPage} />;
+        return <HomePage setCurrentPage={setCurrentPage} onProductClick={handleProductClick} />;
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation
-        setCurrentPage={setCurrentPage}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        onSearch={handleSearch}
-      />
       <main>{renderPage()}</main>
-      <Footer setCurrentPage={setCurrentPage} siteSettings={siteSettings} />
 
-      {/* Product Detail Modal */}
-      {selectedProduct && (
-        <div
-          className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50"
-          onClick={() => setSelectedProduct(null)}
-        >
-          <div
-            className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setSelectedProduct(null)}
-              className="absolute top-3 right-3 bg-gray-100 rounded-full p-2 hover:bg-gray-200 transition z-10"
-            >
-              <X className="w-5 h-5 text-gray-600" />
-            </button>
-            <div className="relative bg-white p-6 flex items-center justify-center h-64 sm:h-80">
-              <img
-                src={selectedProduct.images?.[0] || "/placeholder.png"}
-                alt={selectedProduct.name}
-                className="max-w-full max-h-full object-contain"
-              />
-            </div>
-            <div className="p-6 bg-[#660033] text-white rounded-b-2xl">
-              <h2 className="text-xl sm:text-2xl font-bold mb-2">
-                {selectedProduct.name}
-              </h2>
-              {selectedProduct.show_price !== false && (
-                selectedProduct.offer_quantity && selectedProduct.offer_price ? (
-                  <p className="text-2xl sm:text-3xl font-bold text-pink-200 mb-4">
-                    {selectedProduct.offer_quantity} for £{typeof selectedProduct.offer_price === 'number' ? selectedProduct.offer_price.toFixed(2) : selectedProduct.offer_price}
-                  </p>
-                ) : selectedProduct.price ? (
-                  <div className="flex items-center gap-3 mb-4">
-                    <p className="text-2xl sm:text-3xl font-bold text-white">
-                      £{typeof selectedProduct.price === 'number' ? selectedProduct.price.toFixed(2) : selectedProduct.price}
-                    </p>
-                    {selectedProduct.compare_at_price && selectedProduct.compare_at_price > selectedProduct.price && (
-                      <p className="text-2xl sm:text-3xl text-white font-bold" style={{ textDecoration: 'line-through', textDecorationColor: 'red', textDecorationThickness: '2px' }}>
-                        £{typeof selectedProduct.compare_at_price === 'number' ? selectedProduct.compare_at_price.toFixed(2) : selectedProduct.compare_at_price}
-                      </p>
-                    )}
-                  </div>
-                ) : null
-              )}
-              {selectedProduct.description && (
-                <div className="mb-4">
-                  <h3 className="font-semibold text-pink-200 mb-1">Description</h3>
-                  <p className="text-white/90 text-sm sm:text-base">
-                    {selectedProduct.description}
-                  </p>
-                </div>
-              )}
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                {selectedProduct.category && (
-                  <div>
-                    <span className="text-pink-200">Category:</span>
-                    <p className="font-medium">{selectedProduct.category}</p>
-                  </div>
-                )}
-                {selectedProduct.size && (
-                  <div>
-                    <span className="text-pink-200">Size:</span>
-                    <p className="font-medium">{selectedProduct.size}</p>
-                  </div>
-                )}
-                {selectedProduct.strength && (
-                  <div>
-                    <span className="text-pink-200">Strength:</span>
-                    <p className="font-medium">{selectedProduct.strength}</p>
-                  </div>
-                )}
-                {selectedProduct.flavor && (
-                  <div>
-                    <span className="text-pink-200">Flavour:</span>
-                    <p className="font-medium">{selectedProduct.flavor}</p>
-                  </div>
-                )}
-              </div>
-              <button
-                onClick={() => setSelectedProduct(null)}
-                className="mt-6 w-full bg-white text-[#660033] py-3 rounded-full font-semibold hover:bg-gray-100 transition"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
 export default MakWinesApp;
+

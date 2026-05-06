@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/Components/layout/Navbar";
+import Footer from "@/Components/layout/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -170,37 +172,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // ============================================================
-  // SITE PAUSED - Hosting fee not paid
-  // To restore the site, remove this block and uncomment {children} below
-  // ============================================================
   return (
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-icon.svg" />
-        <meta name="robots" content="noindex, nofollow" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        style={{ margin: 0, padding: 0 }}
-      >
-        {/* SITE PAUSED - uncomment {children} and remove this block to restore */}
-        {/* {children} */}
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "#000",
-            color: "#fff",
-            fontFamily: "system-ui, -apple-system, sans-serif",
-          }}
-        >
-          <h1 style={{ fontSize: "2rem", fontWeight: 600 }}>
-            Site Temporarily Unavailable
-          </h1>
+      <body className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-gray-50 antialiased`}>
+        <div className="flex min-h-screen flex-col">
+          <Navbar />
+          <div className="flex-1">{children}</div>
+          <Footer />
         </div>
       </body>
     </html>

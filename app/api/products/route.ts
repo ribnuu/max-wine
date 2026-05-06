@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { productSchema } from "@/lib/validation/schemas";
 
 // GET all products
 export async function GET(request: NextRequest) {
@@ -30,11 +31,19 @@ export async function GET(request: NextRequest) {
 // POST new product
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  const parsed = productSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validation failed", details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
 
   const supabaseAdmin = getSupabaseAdmin();
   const { data, error } = await supabaseAdmin
     .from("products")
-    .insert([body])
+    .insert([parsed.data])
     .select()
     .single();
 

@@ -7,6 +7,7 @@ export default function AdminAuthGate({
   children: React.ReactNode;
 }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [email, setEmail] = useState("mak@makwines.co.uk");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -26,13 +27,14 @@ export default function AdminAuthGate({
     const res = await fetch("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ email, password }),
     });
 
     if (res.ok) {
       setIsAuthenticated(true);
     } else {
-      setError("Invalid password");
+      const data = await res.json().catch(() => ({ error: "Login failed" }));
+      setError(data.error || "Login failed");
     }
   };
 
@@ -61,13 +63,23 @@ export default function AdminAuthGate({
             </div>
           )}
           <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Admin email"
+            className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#660033] focus:border-transparent"
+            required
+            autoComplete="username"
+          />
+          <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter admin password"
             className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-[#660033] focus:border-transparent"
             required
-            autoFocus
+            autoFocus={false}
+            autoComplete="current-password"
           />
           <button
             type="submit"

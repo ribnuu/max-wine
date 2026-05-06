@@ -55,7 +55,7 @@ export default function SettingsPage() {
     try {
       const dataToSave = {
         ...settings,
-        admin_password: newPassword || undefined,
+        newPassword: newPassword || undefined,
       };
 
       const res = await fetch("/api/site-settings", {
@@ -188,32 +188,6 @@ export default function SettingsPage() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#660033]"
                   placeholder="Fri - Sat: 12pm - 10pm"
                 />
-              </div>
-
-              {/* Admin Controls Section */}
-              <div className="border-t pt-6 mt-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Admin Controls</h3>
-
-                {/* Add Product Toggle */}
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg mb-4">
-                  <div>
-                    <label className="font-medium text-gray-700">Enable Add Product</label>
-                    <p className="text-sm text-gray-500">Allow adding new products from admin panel</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setSettings({ ...settings, add_product_enabled: !settings.add_product_enabled })}
-                    className={`relative w-12 h-6 rounded-full transition-colors ${
-                      settings.add_product_enabled ? "bg-green-500" : "bg-gray-300"
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-all duration-200 ${
-                        settings.add_product_enabled ? "translate-x-6" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
               </div>
 
               {/* Password Change Section */}

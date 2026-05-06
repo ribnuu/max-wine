@@ -26,6 +26,8 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
   const [error, setError] = useState("");
   const [offerType, setOfferType] = useState<OfferType>(getInitialOfferType(product));
   const [weekDeals, setWeekDeals] = useState<WeekDeal[]>([]);
+  // Change to true to allow adding new products from the admin panel
+  const addProductEnabled = false;
 
   // Fetch week deals for dropdown
   useEffect(() => {
@@ -442,7 +444,7 @@ export default function ProductForm({ product, isEditing = false }: ProductFormP
       <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
         <button
           type="submit"
-          disabled={true}
+          disabled={isEditing ? loading : !addProductEnabled || loading}
           className="px-4 sm:px-6 py-2 sm:py-3 bg-[#660033] text-white rounded-lg font-medium hover:bg-[#550028] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base"
         >
           {loading && <Loader2 size={18} className="animate-spin" />}
