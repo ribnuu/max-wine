@@ -879,41 +879,43 @@ const HomePage = ({
         </div>
       </div>
 
-      {/* Latest Deals Section */}
-      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-red-700">
-          Week Deals
-        </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 text-white">
-          {(weekDeals.length > 0 ? weekDeals : deals).map((deal) => {
-            const isClickable = !("is_clickable" in deal) || deal.is_clickable !== false;
-            return (
-              <div
-                key={deal.id}
-                onClick={() => {
-                  if (isClickable && onDealClick && deal.id) {
-                    onDealClick(deal as WeekDeal);
-                  } else if (isClickable) {
-                    setCurrentPage("Week-deals");
-                  }
-                }}
-                className={`bg-[#660033] hover:shadow-2xl transition-all transform overflow-hidden flex flex-col rounded-xl sm:rounded-2xl ${
-                  isClickable ? "hover:-translate-y-1 cursor-pointer" : "cursor-default"
-                }`}
-              >
-                <img
-                  src={deal.image}
-                  alt={deal.title}
-                  className="w-full h-32 sm:h-40 md:h-48 lg:h-56 object-cover"
-                />
-                <div className="p-2 sm:p-4">
-                  <h3 className="font-semibold text-sm sm:text-base md:text-lg line-clamp-2">{deal.title}</h3>
+      {/* Latest Deals Section - Only show if there are deals */}
+      {weekDeals.length > 0 && (
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-red-700">
+            Week Deals
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 text-white">
+            {weekDeals.map((deal) => {
+              const isClickable = deal.is_clickable !== false;
+              return (
+                <div
+                  key={deal.id}
+                  onClick={() => {
+                    if (isClickable && onDealClick && deal.id) {
+                      onDealClick(deal);
+                    } else if (isClickable) {
+                      setCurrentPage("Week-deals");
+                    }
+                  }}
+                  className={`bg-[#660033] hover:shadow-2xl transition-all transform overflow-hidden flex flex-col rounded-xl sm:rounded-2xl ${
+                    isClickable ? "hover:-translate-y-1 cursor-pointer" : "cursor-default"
+                  }`}
+                >
+                  <img
+                    src={deal.image}
+                    alt={deal.title}
+                    className="w-full h-32 sm:h-40 md:h-48 lg:h-56 object-cover"
+                  />
+                  <div className="p-2 sm:p-4">
+                    <h3 className="font-semibold text-sm sm:text-base md:text-lg line-clamp-2">{deal.title}</h3>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
     </div>
   );
