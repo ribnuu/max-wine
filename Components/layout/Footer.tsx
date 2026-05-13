@@ -54,7 +54,7 @@ export default function Footer() {
               Visit Store
             </Link>
             <a
-              href={`mailto:${siteSettings.email}`}
+              href="mailto:mak@makwines.co.uk"
               className="rounded-full border border-white/30 px-5 py-2 text-sm font-semibold transition hover:bg-white/10"
             >
               Contact Us
