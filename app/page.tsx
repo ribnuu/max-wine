@@ -744,7 +744,7 @@ const HomePage = ({
   }, []);
 
   // Enrich deals with product data when possible
-  const [enrichedDeals, setEnrichedDeals] = useState<Record<string, any>>({});
+  const [enrichedDeals, setEnrichedDeals] = useState<Record<string, Product>>({});
 
   useEffect(() => {
     if (!weekDeals || weekDeals.length === 0) return;
