@@ -709,6 +709,7 @@ const HomePage = ({
   const [dynamicProducts, setDynamicProducts] = useState<Record<string, Product[]>>({});
   const [, setLoading] = useState(true);
   const [weekDeals, setWeekDeals] = useState<WeekDeal[]>([]);
+  const router = useRouter();
 
   // Fetch products from Supabase
   useEffect(() => {
@@ -879,14 +880,14 @@ const HomePage = ({
         </div>
       </div>
 
-      {/* Latest Deals Section - Only show if there are deals */}
-      {weekDeals.length > 0 && (
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-red-700">
-            Week Deals
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 text-white">
-            {weekDeals.map((deal) => {
+      {/* Latest Deals / Category Cards Section - show deals if present, otherwise show category cards */}
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center text-red-700">
+          Week Deals
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 text-white">
+          {weekDeals.length > 0 ? (
+            weekDeals.map((deal) => {
               const isClickable = deal.is_clickable !== false;
               return (
                 <div
@@ -900,8 +901,7 @@ const HomePage = ({
                   }}
                   className={`bg-[#660033] hover:shadow-2xl transition-all transform overflow-hidden flex flex-col rounded-xl sm:rounded-2xl ${
                     isClickable ? "hover:-translate-y-1 cursor-pointer" : "cursor-default"
-                  }`}
-                >
+                  }`}>
                   <img
                     src={deal.image}
                     alt={deal.title}
@@ -912,10 +912,32 @@ const HomePage = ({
                   </div>
                 </div>
               );
-            })}
-          </div>
+            })
+          ) : (
+            // Show category cards when there are no week deals
+            [
+              { label: "Spirit Of The Week", category: "Spirits", emoji: "🥃" },
+              { label: "Wine Of The Week", category: "Wines", emoji: "🍷" },
+              { label: "Ale Of The Week", category: "Beers & Ciders", emoji: "🍺" },
+              { label: "Vapes & E-Liquids", category: "Vapes & E-Liquids", emoji: "💨" },
+              { label: "Sweets Of The Week", category: "Sweets", emoji: "🍬" },
+            ].map((c) => (
+              <button
+                key={c.category}
+                onClick={() => router.push(`/?category=${encodeURIComponent(c.category)}`)}
+                className="bg-[#660033] hover:shadow-2xl transition-all transform overflow-hidden flex flex-col rounded-xl sm:rounded-2xl hover:-translate-y-1 cursor-pointer"
+              >
+                <div className="w-full h-32 sm:h-40 md:h-48 lg:h-56 flex items-center justify-center bg-gradient-to-br from-[#6b0037] to-[#3a001e]">
+                  <div className="text-4xl">{c.emoji}</div>
+                </div>
+                <div className="p-2 sm:p-4 text-center">
+                  <h3 className="font-semibold text-sm sm:text-base md:text-lg">{c.label}</h3>
+                </div>
+              </button>
+            ))
+          )}
         </div>
-      )}
+      </div>
 
     </div>
   );
