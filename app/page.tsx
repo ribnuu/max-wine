@@ -746,7 +746,10 @@ const HomePage = ({
     : productsByCategory;
 
   // Get current category products - show all without limit
-  const currentCategoryProducts: CatalogProduct[] = selectedCategory ? (productsToShow[selectedCategory] || []) : [];
+  // If no category is selected, flatten all products so homepage shows a product grid
+  const currentCategoryProducts: CatalogProduct[] = selectedCategory
+    ? (productsToShow[selectedCategory] || [])
+    : Object.values(productsToShow).flat();
 
   const handleCategoryClick = (categoryName: string) => {
     setIsAnimating(true);
@@ -778,7 +781,7 @@ const HomePage = ({
 
           {/* Category Cards or Product Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-            {!selectedCategory ? (
+            {(!selectedCategory && Object.keys(dynamicProducts).length === 0) ? (
               // Display Category Cards
               categories.map((category) => (
                 <button
