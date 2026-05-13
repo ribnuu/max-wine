@@ -13,6 +13,7 @@ import {
   Phone,
   Clock,
 } from "lucide-react";
+import WeekDealCard from "@/Components/Ui/WeekDealCard";
 import ELiquidProductsPage from "@/Components/Ui/E-LiquidProductspage";
 import HeroSlide from "@/Components/Ui/Hero-Slide";
 import Image from "next/image";
@@ -742,6 +743,29 @@ const HomePage = ({
       .catch(() => {});
   }, []);
 
+  // Enrich deals with product data when possible
+  const [enrichedDeals, setEnrichedDeals] = useState<Record<string, any>>({});
+
+  useEffect(() => {
+    if (!weekDeals || weekDeals.length === 0) return;
+
+    weekDeals.forEach(async (deal) => {
+      try {
+        // attempt to extract product id from link like /products/123
+        const m = deal.link && deal.link.match(/products\/(\d+)/);
+        if (m && m[1]) {
+          const res = await fetch(`/api/products/${m[1]}`);
+          if (res.ok) {
+            const p = await res.json();
+            setEnrichedDeals((prev) => ({ ...prev, [deal.id]: p }));
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+    });
+  }, [weekDeals]);
+
   const productsToShow: Record<string, CatalogProduct[]> = Object.keys(dynamicProducts).length > 0
     ? (dynamicProducts as Record<string, CatalogProduct[]>)
     : productsByCategory;
@@ -889,52 +913,30 @@ const HomePage = ({
           {weekDeals.length > 0 ? (
             weekDeals.map((deal) => {
               const isClickable = deal.is_clickable !== false;
+              const p = enrichedDeals[deal.id];
+              const image = p?.images?.[0] || deal.image || "/Images/categories/Sweets.jpeg";
+              const title = p?.name || deal.title;
+              const sale_price = p?.price || undefined;
+              const original_price = p?.compare_at_price || undefined;
+
               return (
-                <div
+                <WeekDealCard
                   key={deal.id}
-                  onClick={() => {
-                    if (isClickable && onDealClick && deal.id) {
-                      onDealClick(deal);
-                    } else if (isClickable) {
-                      setCurrentPage("Week-deals");
-                    }
-                  }}
-                  className={`bg-[#660033] hover:shadow-2xl transition-all transform overflow-hidden flex flex-col rounded-xl sm:rounded-2xl ${
-                    isClickable ? "hover:-translate-y-1 cursor-pointer" : "cursor-default"
-                  }`}>
-                  <img
-                    src={deal.image}
-                    alt={deal.title}
-                    className="w-full h-32 sm:h-40 md:h-48 lg:h-56 object-cover"
-                  />
-                  <div className="p-2 sm:p-4">
-                    <h3 className="font-semibold text-sm sm:text-base md:text-lg line-clamp-2">{deal.title}</h3>
-                  </div>
-                </div>
+                  id={deal.id}
+                  title={title}
+                  description={deal.description}
+                  image={image}
+                  discount_percentage={deal.discount_percentage}
+                  original_price={original_price}
+                  sale_price={sale_price}
+                  onClick={() => router.push(`/week-deal/${deal.id}`)}
+                />
               );
             })
           ) : (
-            // Show category cards when there are no week deals
-            [
-              { label: "Spirit Of The Week", category: "Spirits", emoji: "🥃" },
-              { label: "Wine Of The Week", category: "Wines", emoji: "🍷" },
-              { label: "Ale Of The Week", category: "Beers & Ciders", emoji: "🍺" },
-              { label: "Vapes & E-Liquids", category: "Vapes & E-Liquids", emoji: "💨" },
-              { label: "Sweets Of The Week", category: "Sweets", emoji: "🍬" },
-            ].map((c) => (
-              <button
-                key={c.category}
-                onClick={() => router.push(`/?category=${encodeURIComponent(c.category)}`)}
-                className="bg-[#660033] hover:shadow-2xl transition-all transform overflow-hidden flex flex-col rounded-xl sm:rounded-2xl hover:-translate-y-1 cursor-pointer"
-              >
-                <div className="w-full h-32 sm:h-40 md:h-48 lg:h-56 flex items-center justify-center bg-gradient-to-br from-[#6b0037] to-[#3a001e]">
-                  <div className="text-4xl">{c.emoji}</div>
-                </div>
-                <div className="p-2 sm:p-4 text-center">
-                  <h3 className="font-semibold text-sm sm:text-base md:text-lg">{c.label}</h3>
-                </div>
-              </button>
-            ))
+            <div className="col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-5 text-center text-gray-600 bg-white rounded-lg p-8">
+              <h3 className="text-lg font-semibold">No weekly deals available right now. Check back soon!</h3>
+            </div>
           )}
         </div>
       </div>
