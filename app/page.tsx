@@ -745,8 +745,7 @@ const HomePage = ({
     ? (dynamicProducts as Record<string, CatalogProduct[]>)
     : productsByCategory;
 
-  // Get current category products - show all without limit
-  // If no category is selected, flatten all products so homepage shows a product grid
+  // Get current category products - when no category selected, show ALL products
   const currentCategoryProducts: CatalogProduct[] = selectedCategory
     ? (productsToShow[selectedCategory] || [])
     : Object.values(productsToShow).flat();
@@ -779,9 +778,28 @@ const HomePage = ({
             {selectedCategory ? selectedCategory : "Shop By Category"}
           </h2>
 
+          {/* Category Buttons */}
+          <div className="flex flex-wrap gap-2 justify-center mb-4">
+            <button
+              onClick={() => handleGoBack()}
+              className={`px-3 py-1 rounded-full text-sm font-medium ${selectedCategory ? "bg-[#660033] text-white" : "bg-white text-[#660033] border border-gray-200"}`}
+            >
+              All
+            </button>
+            {categories.map((c) => (
+              <button
+                key={c.name}
+                onClick={() => handleCategoryClick(c.name)}
+                className={`px-3 py-1 rounded-full text-sm font-medium ${selectedCategory === c.name ? "bg-[#660033] text-white" : "bg-white text-[#660033] border border-gray-200"}`}
+              >
+                {c.name}
+              </button>
+            ))}
+          </div>
+
           {/* Category Cards or Product Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-            {(!selectedCategory && Object.keys(dynamicProducts).length === 0) ? (
+            {!selectedCategory ? (
               // Display Category Cards
               categories.map((category) => (
                 <button
